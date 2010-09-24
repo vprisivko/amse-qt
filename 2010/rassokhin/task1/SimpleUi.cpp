@@ -7,7 +7,7 @@
 #include <QPushButton>
 
 QLayout * getInputForm(QWidget * parent, QString label) {
-    QLayout * ret = new QHBoxLayout(parent);
+    QLayout * ret = new QHBoxLayout();
     ret->addWidget(new QLabel(label,parent));
     ret->addWidget(new QLineEdit(parent));
     return ret;

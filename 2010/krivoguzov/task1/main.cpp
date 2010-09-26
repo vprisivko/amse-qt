@@ -53,7 +53,6 @@ int main (int argc, char **argv){
     QObject::connect(exit,SIGNAL(clicked()),qApp,SLOT(quit()));
     mainLayout->addWidget(exit);
 
-    mainLayout->setSizeConstraint(QLayout::SetFixedSize);
     d.setLayout(mainLayout);
     d.show();
     return app.exec();

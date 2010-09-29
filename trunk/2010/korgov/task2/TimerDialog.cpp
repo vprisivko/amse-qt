@@ -24,6 +24,7 @@ TimerDialog::TimerDialog(QWidget *parent)
 
 	QHBoxLayout *setIntervalLayout = new QHBoxLayout();
 	myIntervalInput = new QLineEdit(this);
+	myIntervalInput->setValidator(new QIntValidator(0,INT_MAX,this));
 	setIntervalLayout->addWidget(myIntervalInput);
 	mySetButton = new QPushButton("Set",this);
 	setIntervalLayout->addWidget(mySetButton);

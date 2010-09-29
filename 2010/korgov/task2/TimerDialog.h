@@ -9,6 +9,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTimerEvent>
+#include <QIntValidator>
+
+#include <climits>
 
 class TimerDialog : public QDialog{
     Q_OBJECT;

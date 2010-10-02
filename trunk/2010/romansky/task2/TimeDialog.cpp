@@ -63,8 +63,6 @@ void TimeDialog::Set(){
           killTimer(mysecondtimerid);
         }
         mysecondtimerid = startTimer(myset->text().toInt());
-      } else {
-        qApp->quit();
       }
     }
   }

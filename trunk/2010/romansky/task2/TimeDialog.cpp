@@ -12,7 +12,7 @@ TimeDialog::TimeDialog(QWidget* parent) :QDialog(parent){
   myfirsttimelabel = new QLabel("0",this);
   mysecondtimelabel = new QLabel("0",this);
 
-  mybox = new QComboBox(this);      qApp->quit();
+  mybox = new QComboBox(this);      
   mybox->addItem("timer1");
   mybox->addItem("timer2");
   

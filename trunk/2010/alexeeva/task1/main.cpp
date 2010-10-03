@@ -1,5 +1,3 @@
-#include "gui1_1.h"
-
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>

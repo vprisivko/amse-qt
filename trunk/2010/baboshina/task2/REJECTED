@@ -1,0 +1,7 @@
+Buttons doesn't work
+and message:
+
+Object::connect: No such signal QPushButton::presed()
+
+
+I guess that signal name is clicked(). Have you tested?

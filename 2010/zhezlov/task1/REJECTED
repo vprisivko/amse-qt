@@ -1,0 +1,8 @@
+main.cpp: In function ‘int main(int, char**)’:
+main.cpp:21: warning: deprecated conversion from string constant to ‘char*’
+main.cpp:22: warning: deprecated conversion from string constant to ‘char*’
+main.cpp:23: warning: deprecated conversion from string constant to ‘char*’
+main.cpp:24: warning: deprecated conversion from string constant to ‘char*’
+
+
+In next time it will be rejected

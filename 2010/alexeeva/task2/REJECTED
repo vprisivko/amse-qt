@@ -1,0 +1,6 @@
+you have to use .pro files
+
+sequence for build:
+
+qmake
+make

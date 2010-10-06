@@ -1,4 +1,4 @@
-#include "dialog.h"
+#include "task2.h"
 
 #include <QtGui>
 #include <QApplication>

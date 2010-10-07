@@ -37,8 +37,8 @@ myDialog::myDialog(QWidget *p):QDialog(p){
     layout->insertLayout(-1, l);
     layout->addWidget(btnStop);
 
-    connect(btnSet, SIGNAL(presed()), this, SLOT(set()));
-    connect(btnStop, SIGNAL(pressed()), this, SLOT(stop()));
+    connect(btnSet, SIGNAL(clicked()), this, SLOT(set()));
+    connect(btnStop, SIGNAL(clicked()), this, SLOT(stop()));
 
     count1 = count2 = 0;
     isTimerOn1 = isTimerOn2 = false;
@@ -85,6 +85,6 @@ void myDialog::timerEvent(QTimerEvent *e){
 
     if(isTimerOn2 && (timer_id2 == currentTId)){
         count2 ++;
-        lbl2->setText(QString::number(count2));
+        lbltimer2->setText(QString::number(count2));
     }
 }

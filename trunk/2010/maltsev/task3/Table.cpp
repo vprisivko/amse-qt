@@ -38,25 +38,25 @@ void Table::Ball::move(int w, int h) {
   ryeff = ry;
   if (x + rx > w) {
     rxeff = w - x;
-    if (x + rx/2 > w) {
+    if (x + rx/2 > w && dx > 0) {
       dx = -dx;
     }
   }
   if (x - rx < 0) {
     rxeff = x;
-    if (x - rx/2 < 0) {
+    if (x - rx/2 < 0 && dx < 0) {
       dx = -dx;
     }
   }
   if (y + ry > h) {
     ryeff = h - y;
-    if (y + ry/2 > h) {
+    if (y + ry/2 > h && dy > 0) {
       dy = -dy;
     }
   }
   if (y - ry < 0) {
     ryeff = y;
-    if (y - ry/2 < 0) {
+    if (y - ry/2 < 0 && dy < 0) {
       dy = -dy;
     }
   }

@@ -21,11 +21,20 @@ private:
     QTimer * drawTimer;
     QPainter * myPainter;
     QTime lastUpdateTime;
-    QPointF ballCenterPosition;
-    qreal defBallR;
-    qreal defBallDeformationRate;
-    QPointF ballRadiuses;
-    QPointF ballSpeed;
+
+    struct MyBall {
+        QPointF velocity;
+        QPointF position;
+        QPointF radiuses;
+        qreal defR;
+        void process(qreal dt, QRectF borders);
+    private:
+        QPointF acceleration;
+        QPointF k;
+    };
+
+    MyBall ball;
+
 };
 
 #endif // MOVINGBALLDIALOG_H

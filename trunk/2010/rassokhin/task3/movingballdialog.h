@@ -28,8 +28,8 @@ private:
         QPointF radiuses;
         qreal defR;
         void process(qreal dt, QRectF borders);
-    private:
         QPointF acceleration;
+    private:
         QPointF k;
     };
 

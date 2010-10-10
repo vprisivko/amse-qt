@@ -18,26 +18,29 @@ Dialog::Dialog(QWidget *parent) : QDialog(parent),
 	cbTimer_ = new QComboBox(this);
 	txtValue_ = new QLineEdit(this);
 
-	setLayout(new QVBoxLayout(this));
+	setLayout(new QVBoxLayout());
 
-	QHBoxLayout *lay = new QHBoxLayout(this);
+	QVBoxLayout *lay0 = new QVBoxLayout();
+	QHBoxLayout *lay = new QHBoxLayout();
 	lay->addWidget(new QLabel("Timer 1: ", this));
 	lay->addWidget(trmTicker1_);
-	layout()->addItem(lay);
+	lay0->addItem(lay);
 
-	lay = new QHBoxLayout(this);
+	lay = new QHBoxLayout();
 	lay->addWidget(new QLabel("Timer 2: ", this));
 	lay->addWidget(trmTicker2_);
-	layout()->addItem(lay);
+	lay0->addItem(lay);
+
+	layout()->addItem(lay0);
 
 	cbTimer_->addItem("Timer 1");
 	cbTimer_->addItem("Timer 2");
 	layout()->addWidget(cbTimer_);
 
-	lay = new QHBoxLayout(this);
-	lay->addWidget(txtValue_);
-	lay->addWidget(btnSet_);
-	layout()->addItem(lay);
+	QHBoxLayout *lay1 = new QHBoxLayout();
+	lay1->addWidget(txtValue_);
+	lay1->addWidget(btnSet_);
+	layout()->addItem(lay1);
 
 	layout()->addWidget(btnStop_);
 

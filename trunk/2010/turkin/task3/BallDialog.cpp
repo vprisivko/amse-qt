@@ -56,14 +56,14 @@ void BallDialog::timerEvent(QTimerEvent*) {
 	if (rx != initRadius && ry != initRadius) {
 		dy = -dy;
 		dx = -dx;
-	}
-
-	//when ball is collapsed enough, push off from wall
-	if ( ry < initRadius / 2 ) {
-		dy = -dy;
-	}
-	if ( rx < initRadius / 2 ) {
-		dx = -dx;
+	} else {
+	    //when ball is collapsed enough, push off from wall
+	    if ( ry < initRadius / 2 ) {
+		    dy = -dy;
+	    }
+	    if ( rx < initRadius / 2 ) {
+		    dx = -dx;
+	    }
 	}
 
 	coord = QPoint(x,y);

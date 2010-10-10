@@ -8,6 +8,7 @@ Dialog::Dialog(QWidget *parent): QDialog(parent),
 	myTimer1_id(0), myTimer2_id(0),
 	myTicks1(0), myTicks2(0),
 	isStopped1(true), isStopped2(true) {
+
 	setWindowTitle("Timers tricking");
 
 	myButtonSet = new QPushButton("SET", this);
@@ -24,20 +25,20 @@ Dialog::Dialog(QWidget *parent): QDialog(parent),
 
 	setLayout(new QVBoxLayout(this));
 
-	QHBoxLayout *lay = new QHBoxLayout(this);
+	QHBoxLayout *lay = new QHBoxLayout();
 
 	lay->addWidget(new QLabel("Timer 1: ", this));
 	lay->addWidget(myTicker1);
 	layout()->addItem(lay);
 
-	lay = new QHBoxLayout(this);
+	lay = new QHBoxLayout();
 	lay->addWidget(new QLabel("Timer 2: ", this));
 	lay->addWidget(myTicker2);
 	layout()->addItem(lay);
 
 	layout()->addWidget(myCBTimers);
 
-	lay = new QHBoxLayout(this);
+	lay = new QHBoxLayout();
 	lay->addWidget(myEditInterval);
 	lay->addWidget(myButtonSet);
 	layout()->addItem(lay);

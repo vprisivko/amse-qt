@@ -11,8 +11,8 @@ Dialog::Dialog(QWidget *parent):
     myBall.y = qrand() % this->height() / 2 + myBall.radius;
     myBall.vx = qrand() % 1 + 3;
     myBall.vy = qrand() % 1 + 3;
-    myBall.width = myBall.radius;
-    myBall.height = myBall.radius;
+    myBall.width = myBall.radius * 2;
+    myBall.height = myBall.radius * 2;
 
     myPainter = new QPainter();
 }

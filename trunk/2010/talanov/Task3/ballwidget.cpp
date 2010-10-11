@@ -4,15 +4,18 @@
 
 #include <QtGui/QPainter>
 #include <QtCore/QTimer>
+#include <QtCore/QtGlobal>
+#include <QKeyEvent>
 
 #include <cmath>
 
 BallWidget::BallWidget(int ballArea, int updateInterval, const QColor& ballColor, const QColor& backColor, QWidget *parent, Qt::WFlags flags) : myBallArea(ballArea), myUpdateInterval(updateInterval), myBallColor(ballColor), myBackgroundColor(backColor)
 {
-  myBallPos = QPoint(35, 35);
+  setWindowTitle("Press Space to change direction");
+  myBallPos = QPoint(width() / 2, height() / 2);
   myVerticalRadius = myHorizontalRadius = sqrt((qreal)ballArea);
-  myBallVelocity.setX(-200);
-  myBallVelocity.setY(100);
+  myBallVelocity.setX((qreal) (qrand() % 500));
+  myBallVelocity.setY((qreal) (qrand() % 500));
   QTimer* timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(move()));
   timer->start(myUpdateInterval);
@@ -20,7 +23,7 @@ BallWidget::BallWidget(int ballArea, int updateInterval, const QColor& ballColor
 
 BallWidget::~BallWidget()
 {
-
+  
 }
 
 void BallWidget::paintEvent(QPaintEvent* e)
@@ -38,37 +41,38 @@ void BallWidget::move()
   qreal dy = ((qreal)myUpdateInterval * myBallVelocity.y() / (qreal)1000);
 
   //deform the ball
-  if ((myBallPos.x() + myHorizontalRadius + dx > width()) && (myBallVelocity.x() > 0))
+  if ((myBallPos.x() + myHorizontalRadius + dx > width()))
   {
     myHorizontalRadius = qMax((qreal)(sqrt((qreal)myBallArea / 2)), width() - myBallPos.x() - dx);
     myVerticalRadius = myBallArea / myHorizontalRadius;
   }
 
-  if ((myBallPos.x() - myHorizontalRadius + dx < 0) && (myBallVelocity.x() < 0))
+  if ((myBallPos.x() - myHorizontalRadius + dx < 0))
   {
     myHorizontalRadius = qMax((qreal)(sqrt((qreal)myBallArea / 2)), myBallPos.x() + dx);
     myVerticalRadius = myBallArea / myHorizontalRadius;
   }
 
-  if ((myBallPos.y() + myVerticalRadius + dy > height()) && (myBallVelocity.y() > 0))
+  if ((myBallPos.y() + myVerticalRadius + dy > height()))
   {
     myVerticalRadius = qMax((qreal)(sqrt((qreal)myBallArea / 2)), height() - myBallPos.y() - dy);
     myHorizontalRadius = myBallArea / myVerticalRadius;
   }
 
-  if ((myBallPos.y() - myVerticalRadius + dy < 0) && (myBallVelocity.y() < 0))
+  if ((myBallPos.y() - myVerticalRadius + dy < 0))
   {
     myVerticalRadius = qMax((qreal)(sqrt((qreal)myBallArea / 2)), myBallPos.y() + dy);
     myHorizontalRadius = myBallArea / myVerticalRadius;
   }
 
-  if (((myBallPos.x() + myHorizontalRadius + dx > width()) && (myBallVelocity.x() > 0)) || ((myBallPos.x() - myHorizontalRadius + dx < 0) && (myBallVelocity.x() < 0)))
+  //reverse the speed
+  if (((myBallPos.x() + myHorizontalRadius + dx > width() + 0.1f) && (myBallVelocity.x() > 0)) || ((myBallPos.x() - myHorizontalRadius + dx < -0.1f) && (myBallVelocity.x() < 0)))
   {
     myBallVelocity.rx() *= -1;
     dx = -dx;
   }
 
-  if (((myBallPos.y() + myVerticalRadius + dy > height()) && (myBallVelocity.y() > 0)) || ((myBallPos.y() - myVerticalRadius + dy < 0) && (myBallVelocity.y() < 0)))
+  if (((myBallPos.y() + myVerticalRadius + dy > height() + 0.1f) && (myBallVelocity.y() > 0)) || ((myBallPos.y() - myVerticalRadius + dy < -0.1f) && (myBallVelocity.y() < 0)))
   {
     myBallVelocity.ry() *= -1;
     dy = -dy;
@@ -78,18 +82,29 @@ void BallWidget::move()
   myBallPos.ry() += dy;
 
   //restore ball size
-  if ((myBallPos.y() + myVerticalRadius < height()) && (myHorizontalRadius > myVerticalRadius))
+  if ((myBallPos.y() + myVerticalRadius < height()) && (myBallPos.y() - myVerticalRadius  > 0) && (myHorizontalRadius > myVerticalRadius))
   {
     myVerticalRadius = qMin((qreal)(sqrt((qreal)myBallArea)), height() - myBallPos.y());
+    myVerticalRadius = qMin(myVerticalRadius, myBallPos.y());
     myHorizontalRadius = myBallArea / myVerticalRadius;
   }
 
-  if ((myBallPos.y() - myVerticalRadius  > 0) && (myHorizontalRadius > myVerticalRadius))
+  if ((myBallPos.x() + myHorizontalRadius < width()) && (myBallPos.x() - myHorizontalRadius  > 0) && (myVerticalRadius > myHorizontalRadius))
   {
-    myVerticalRadius = qMin((qreal)(sqrt((qreal)myBallArea)), myBallPos.y());
-    myHorizontalRadius = myBallArea / myVerticalRadius;
+    myHorizontalRadius = qMin((qreal)(sqrt((qreal)myBallArea)), width() - myBallPos.x());
+    myHorizontalRadius = qMin(myHorizontalRadius, myBallPos.x());
+    myVerticalRadius = myBallArea / myHorizontalRadius;
   }
 
   update();
 
+}
+
+void BallWidget::keyPressEvent(QKeyEvent* e)
+{
+  if (e->key() == Qt::Key_Space)
+  {
+    myBallVelocity.setX((qreal) (qrand() % 500));
+    myBallVelocity.setY((qreal) (qrand() % 500));
+  }
 }

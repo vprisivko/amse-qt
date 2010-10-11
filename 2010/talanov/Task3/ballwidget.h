@@ -6,6 +6,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QPoint>
 #include <QtGui/QColor>
+#include <QtGui/QKeyEvent>
 
 
 class BallWidget : public QWidget
@@ -18,6 +19,7 @@ public:
 
 protected:
 
+  void keyPressEvent(QKeyEvent*);
   void paintEvent(QPaintEvent*);
 
 protected slots:

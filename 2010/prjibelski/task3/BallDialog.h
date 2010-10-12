@@ -32,7 +32,7 @@ public:
     QPainter * ballPainter;
     QTimer * ballTimer;
 
-    BallDialog(double r = 20.0, double vx_ = 0.0, double vy_ = 0.0, double ax_ = 0.008, double ay_ = 0.2, double x_ = 100.0, double y_ = 100.0 );
+    BallDialog(double r = 20.0, double vx_ = 0.0, double vy_ = 0.8, double ax_ = 0.008, double ay_ = 0.2, double x_ = 40.0, double y_ = 20.0 );
 
     void paintEvent( QPaintEvent * );
     void moveBall( double & coord, double & rad, double limit, double & speed, int & compDirection );

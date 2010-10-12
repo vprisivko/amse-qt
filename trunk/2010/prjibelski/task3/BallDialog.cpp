@@ -1,6 +1,3 @@
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-
 #include "BallDialog.h"
 
 BallDialog::BallDialog(double r, double vx_, double vy_, double ax_, double ay_, double x_, double y_) {
@@ -45,6 +42,9 @@ void BallDialog::timeEvent() {
          moveBall(x, rx, vx > 0 ? (double) this->width() : 0.0, vx, compDirectionX );
     }
     else {
+         if ( ( compDirectionX == 1 ) && ( (vx - ax) * vx < 0 ) ) {
+               compDirectionX = -1;
+         }
          int compDirectionXT = compDirectionX;
          compressBall( x, rx, compDirectionX > 0 ? radius/2.0 : radius, vx, compDirectionX);
          vx = (compDirectionX == -compDirectionXT) ? -vx : vx;
@@ -55,6 +55,9 @@ void BallDialog::timeEvent() {
          moveBall(y, ry, vy > 0 ? this->height() : 0, vy, compDirectionY );
     }
     else {
+         if ( ( compDirectionY == 1 ) && ( (vy - ay) * vy < 0 ) ) {
+               compDirectionY = -1;
+         }
          int compDirectionYT = compDirectionY;
          compressBall( y, ry, compDirectionY > 0 ? radius/2.0 : radius, vy, compDirectionY);
          vy = (compDirectionY == -compDirectionYT) ? -vy : vy;

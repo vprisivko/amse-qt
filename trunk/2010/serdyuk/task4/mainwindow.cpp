@@ -64,7 +64,7 @@ void MainWindow::readSettings() {
     settings.beginGroup("MainWindow");
     resize(settings.value("size", QSize(400, 400)).toSize());
     move(settings.value("pos", QPoint(200, 200)).toPoint());
-    if (settings.value("maximazed", false).toBool()) {
+    if (settings.value("maximized", false).toBool()) {
         setWindowState(Qt::WindowMaximized);
     }
     settings.endGroup();

@@ -50,8 +50,13 @@ void Widget::paintEvent(QPaintEvent *) {
     if (myBallX + radius > width()) {
         xRadius = width() - myBallX;
     }
-    if (myBallX - radius < -radius / 2 || myBallX + radius > width() + radius / 2) {
+    if (myBallX - radius < -radius / 2) {
         myBallVx = -myBallVx;
+        myBallX = radius / 2;
+    }
+    if (myBallX + radius > width() + radius / 2) {
+        myBallVx = -myBallVx;
+        myBallX = width() - radius / 2;
     }
     if (myBallY - radius < 0) {
         yRadius = myBallY;
@@ -59,9 +64,16 @@ void Widget::paintEvent(QPaintEvent *) {
     if (myBallY + radius > height()) {
         yRadius = height() - myBallY;
     }
-    if (myBallY - radius < -radius / 2 || myBallY + radius > height() + radius / 2) {
+    if (myBallY - radius < -radius / 2) {
         myBallVy = -myBallVy;
+        myBallY = radius / 2;
     }
+    if (myBallY + radius > height() + radius / 2) {
+        myBallVy = -myBallVy;
+        myBallY = height() - radius / 2;
+    }
+
+//if (myBallX)
     painter.drawEllipse(myBallX - xRadius, myBallY - yRadius, 2 * xRadius, 2 * yRadius);
 }
 

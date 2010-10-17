@@ -3,8 +3,12 @@
 
 
 #include <QMainWindow>
+//#include <QString>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
+#include <QAction>
+#include <QPushButton>
 
 
 class Calculator: public QMainWindow {
@@ -14,7 +18,7 @@ public:
 	Calculator( QWidget* parent = 0 );
 	~Calculator();
 
-	QWidget * inputForm;
+
 	QLineEdit * le;
 	QString fileName;
 	QLabel * log;
@@ -29,6 +33,27 @@ public slots:
 	void revert();
 	void toogleForm();
 	void reset();
+
+private:
+        //Widgets and other stuff
+        QWidget* inputForm;
+        QPushButton* buttonAdd;
+        QPushButton* buttonSubstract;
+        QPushButton* buttonMultiply;
+        QPushButton* buttonDivide;
+        QLabel* lastValueLabel;
+        QLabel* fileNameLabel;
+        QMenu* menuFile;
+        QAction* saveAction;
+        QAction* revertAction;
+
+        //Constructor subroutines
+        void createWidgets();
+        void placeItemsOnLayouts();
+        void connectSigSlots();
+        void addMenuActions();
+
+
 
 };
 

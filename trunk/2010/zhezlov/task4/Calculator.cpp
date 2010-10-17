@@ -1,9 +1,7 @@
 #include <Calculator.h>
-#include <QLabel>
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QMessageBox>
 #include <QMenuBar>
 #include <QFileDialog>
@@ -17,55 +15,83 @@ Calculator::Calculator( QWidget* parent ): QMainWindow(parent){
 
 	setMinimumSize( 400, 300 );
 
-	inputForm = new QDialog(this);
-	inputForm->setLayout( new QVBoxLayout() );
-
-	le = new QLineEdit( "0", inputForm );
-	inputForm->layout()->addWidget( le );
-
-	QLayout* lay = new QHBoxLayout( );
-	inputForm->layout()->addItem( lay );
-
-	QPushButton* buttonAdd = new QPushButton("+", inputForm);
-	QPushButton* buttonSubstract = new QPushButton("-", inputForm);
-	QPushButton* buttonMultiply = new QPushButton("*", inputForm);
-	QPushButton* buttonDivide = new QPushButton("/", inputForm);
-	lay->addWidget( buttonAdd );
-	lay->addWidget( buttonSubstract );
-	lay->addWidget( buttonMultiply );
-	lay->addWidget( buttonDivide );
-
-	connect( buttonAdd, SIGNAL(pressed()), this, SLOT(updateText()) );
-	connect( buttonSubstract, SIGNAL(pressed()), this, SLOT(updateText()) );
-	connect( buttonMultiply, SIGNAL(pressed()), this, SLOT(updateText()) );
-	connect( buttonDivide, SIGNAL(pressed()), this, SLOT(updateText()) );
-
-	QMenu* mFile = menuBar()->addMenu("File");
-	mFile->addAction( "Open", this, SLOT(open(bool)) );
-	mFile->addAction( "Save", this, SLOT(save()) )->
-			setObjectName("SaveAction");
-	mFile->actions()[1]->setEnabled( false );
-	mFile->addAction( "Save As...", this, SLOT(saveAs()) );
-	menuBar()->addAction( "Revert", this, SLOT(revert()) )->
-			setObjectName("RevertAction");
-	menuBar()->addAction( "Toggle input Form", this, SLOT(toogleForm()) );
-	menuBar()->addAction( "Reset", this, SLOT(reset()) );
-	menuBar()->actions()[1]->setEnabled( false );
-
-	QLabel* tmp = new QLabel("0");
-	tmp->setObjectName("lastValueLabel");
-	statusBar()->addPermanentWidget( tmp );
-	tmp = new QLabel("None");
-	tmp->setObjectName("fileNameLabel");
-	statusBar()->addWidget( tmp );
-
-	log = new QLabel();
-	QScrollArea* cw = new QScrollArea(this);
-	setCentralWidget( cw );
-	cw->setWidget( log );
+        createWidgets();
+        placeItemsOnLayouts();
+        connectSigSlots();
+        addMenuActions();
 
 	fileName = "";
 	lastValue = 0;
+
+}
+
+
+void Calculator::createWidgets(){
+
+    inputForm = new QDialog(this);
+
+    buttonAdd = new QPushButton("+", inputForm);
+    buttonSubstract = new QPushButton("-", inputForm);
+    buttonMultiply = new QPushButton("*", inputForm);
+    buttonDivide = new QPushButton("/", inputForm);
+
+    log = new QLabel();
+    lastValueLabel = new QLabel("Last result: 0");
+    fileNameLabel = new QLabel("None");
+
+    le = new QLineEdit( "0", inputForm );
+
+    menuBar();
+    statusBar();
+
+}
+
+
+void Calculator::connectSigSlots(){
+
+    connect( buttonAdd, SIGNAL(pressed()), this, SLOT(updateText()) );
+    connect( buttonSubstract, SIGNAL(pressed()), this, SLOT(updateText()) );
+    connect( buttonMultiply, SIGNAL(pressed()), this, SLOT(updateText()) );
+    connect( buttonDivide, SIGNAL(pressed()), this, SLOT(updateText()) );
+
+}
+
+
+void Calculator::addMenuActions(){
+
+    menuFile = menuBar()->addMenu("File");
+    menuFile->addAction( "Open", this, SLOT(open(bool)) );
+    saveAction = menuFile->addAction( "Save", this, SLOT(save()) );
+    menuFile->addAction( "Save As...", this, SLOT(saveAs()) );
+    revertAction = menuBar()->addAction( "Revert", this, SLOT(revert()) );
+    menuBar()->addAction( "Toggle input Form", this, SLOT(toogleForm()) );
+    menuBar()->addAction( "Reset", this, SLOT(reset()) );
+
+    saveAction->setEnabled( false );
+    revertAction->setEnabled( false );
+
+}
+
+
+void Calculator::placeItemsOnLayouts(){
+
+    inputForm->setLayout( new QVBoxLayout() );
+    QLayout* lay = new QHBoxLayout( );
+
+    inputForm->layout()->addWidget( le );
+    inputForm->layout()->addItem( lay );
+
+    lay->addWidget( buttonAdd );
+    lay->addWidget( buttonSubstract );
+    lay->addWidget( buttonMultiply );
+    lay->addWidget( buttonDivide );
+
+    statusBar()->addPermanentWidget( lastValueLabel );
+    statusBar()->addWidget( fileNameLabel );
+
+    QScrollArea* cw = new QScrollArea(this);
+    setCentralWidget( cw );
+    cw->setWidget( log );
 
 }
 
@@ -84,18 +110,17 @@ void Calculator::open( bool rev ){
 	QFile openedFile( fileName );
 	openedFile.open( QIODevice::ReadOnly );
 
-	statusBar()->findChild<QLabel*>("fileNameLabel")->
-			setText( openedFile.fileName() );
+        fileNameLabel->setText( openedFile.fileName() );
 
 	QString s(openedFile.readLine(40));
-	statusBar()->findChild<QLabel*>("lastValueLabel")->setText(s);
+        lastValueLabel->setText("Last result: " + s);
 	lastValue = s.toDouble();
 
 	log->setText( QString( openedFile.readAll() ) );
 	log->adjustSize();
 
-	menuBar()->findChild<QAction *>("SaveAction")->setEnabled(true);
-	menuBar()->findChild<QAction *>("RevertAction")->setEnabled(true);
+        saveAction->setEnabled(true);
+        revertAction->setEnabled(true);
 
 	openedFile.close();
 
@@ -113,7 +138,7 @@ void Calculator::save(){
 
 	openedFile.close();
 
-	menuBar()->findChild<QAction *>("RevertAction")->setEnabled(true);
+        revertAction->setEnabled(true);
 
 }
 
@@ -130,9 +155,8 @@ void Calculator::saveAs(){
 
 	openedFile.close();
 
-	statusBar()->findChild<QLabel*>("fileNameLabel")->
-			setText( openedFile.fileName() );
-	menuBar()->findChild<QAction *>("RevertAction")->setEnabled(true);
+        fileNameLabel->setText( openedFile.fileName() );
+        revertAction->setEnabled(true);
 
 }
 
@@ -196,8 +220,7 @@ void Calculator::updateText(){
 	}
 
 	log->setText( log->text()+ newLine + "\n" );
-	statusBar()->findChild<QLabel*>("lastValueLabel")->
-			setText( QString().number( lastValue ) );
+        lastValueLabel->setText( "Last result: " + QString().number( lastValue ) );
 	log->adjustSize();
 
 }
@@ -208,7 +231,6 @@ void Calculator::reset(){
 	log->setText( "" );
 	log->adjustSize();
 	lastValue = 0;
-	statusBar()->findChild<QLabel*>("lastValueLabel")->
-			setText( QString().number( lastValue ) );
+        lastValueLabel->setText( QString().number( lastValue ) );
 
 }

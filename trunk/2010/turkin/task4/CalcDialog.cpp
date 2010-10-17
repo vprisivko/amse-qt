@@ -8,19 +8,26 @@
 #include "CalcDialog.h"
 
 CalcDialog::CalcDialog(QWidget *parent): QDialog(parent) {
-
-    // create interface
-   
 	setWindowTitle("calculator");
-
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
         
-	leDigits = new QLineEdit("");
-	leDigits->setValidator( new QIntValidator() );
-	mainLayout->addWidget( leDigits );
+	createDigits();
+	createButtons();
+    createConnects();
+    
+	curResult = 0;
+	curOperation = ' ';
+}
 
-	QHBoxLayout* operLayout = new QHBoxLayout();
+void CalcDialog::createDigits() {
+    leDigits = new QLineEdit("");
+	leDigits->setValidator( new QIntValidator() );
+    mainLayout->addWidget( leDigits );
+}
+	
+void CalcDialog::createButtons() {
+    QHBoxLayout* operLayout = new QHBoxLayout();
 	btnPlus = new QPushButton("+");
 	btnMinus = new QPushButton("-");
 	btnMultiply = new QPushButton("*");
@@ -29,23 +36,20 @@ CalcDialog::CalcDialog(QWidget *parent): QDialog(parent) {
 	operLayout->addWidget(btnMinus);
 	operLayout->addWidget(btnMultiply);
 	operLayout->addWidget(btnDivide);
-
 	mainLayout->addLayout(operLayout);
-    
-    // make connects
-    
+}
+	
+void CalcDialog::createConnects() {
     connect( btnPlus, SIGNAL(clicked()), this, SLOT( plus()) );
     connect( btnMinus, SIGNAL(clicked()), this, SLOT(minus() ) );
 	connect( btnMultiply, SIGNAL(clicked()), this, SLOT(multiply() ) );
 	connect( btnDivide, SIGNAL(clicked()), this, SLOT(divide()) );
-
-    
-    // class fields initialization
-	
-	curResult = 0;
-	curOperation = ' ';
 }
 
+void CalcDialog::hideEvent( QHideEvent*  ) {
+    emit calcHide(false);
+}
+	
 void CalcDialog::plus() {
 	makeOperation( '+' );
 }

@@ -6,6 +6,7 @@
 #include <QString>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QVBoxLayout>
 
  
 class CalcDialog : public QDialog {
@@ -15,7 +16,7 @@ class CalcDialog : public QDialog {
         CalcDialog(QWidget *parent = NULL);
         void setResult(int);
     public:
-    
+        void hideEvent( QHideEvent* event );
 	private: 
 		void makeOperation( char op );	
     private: // UI elements
@@ -24,6 +25,13 @@ class CalcDialog : public QDialog {
         QPushButton* btnMinus;
 		QPushButton* btnMultiply;
 		QPushButton* btnDivide;
+		QVBoxLayout* mainLayout;
+		
+	private: 
+	    void createDigits();
+	    void createButtons();
+        void createConnects();
+        
     
 
     private:
@@ -33,6 +41,7 @@ class CalcDialog : public QDialog {
     
 	signals:
     	void expr(QString string, int result);
+    	void calcHide(bool);
     public slots:
 		void plus();
 		void minus();

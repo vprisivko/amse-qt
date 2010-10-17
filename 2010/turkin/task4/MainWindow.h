@@ -8,6 +8,7 @@
 #include <QString>
 #include <QLabel>
 #include <QTextEdit>
+#include <QAction>
 
 #include "CalcDialog.h"
 
@@ -26,8 +27,23 @@ class MainWindow : public QMainWindow {
 		QLabel *lblFilename;
 		QLabel *lblResult;
 		QString logHistory;
-		QString resultHistory;
+		QString resultHistory;	
+		
+	private: //actions
+	    QAction* actOpenFile;
+        QAction* actSaveFile;
+        QAction* actRevertFile;
+        QAction* actShowCalc;
+
     private:
+        void createConnects();
+        void loadSettings();
+        void saveSettings();
+        void createActions();
+        void createToolBar();
+        void createMenu();
+        void createStatusBar();
+        void createCentralWidget();
     
     signals:
     

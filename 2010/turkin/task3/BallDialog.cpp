@@ -14,7 +14,7 @@
 BallDialog::BallDialog(QWidget *parent): QDialog(parent) {
 	srand( time(NULL) );
 
-	initRadius = 20;
+	initRadius = 40;
 	curRadius = QSize(initRadius,initRadius);
 	coord = QPoint( width() / 2 , height() / 2);
 	
@@ -31,41 +31,34 @@ void BallDialog::timerEvent(QTimerEvent*) {
   	
  	int x = coord.x(), y = coord.y();
 	int rx,ry;
-	
 	//moving
 	x += dx;
 	y += dy;	
-
 	//collapsing ball
 	rx = ry = initRadius;
-	
 	if ( y + initRadius > height() ) {
 		ry -=  y + initRadius - height();
 	} else if ( y - initRadius < 0 ) {
 		ry -= - (y - initRadius);
 	} 
-
 	if ( x + initRadius > width() ) {
 		rx -= x + initRadius - width();
 	} else if ( x - initRadius < 0 ) {
 		rx -= - ( x - initRadius );
 	}
-	
 	//exception if ball is near both of edges
 	//don't wait for it's collapsing, push off
 	if (rx != initRadius && ry != initRadius) {
 		dy = -dy;
 		dx = -dx;
 	} else {
-	    //when ball is collapsed enough, push off from wall
-	    if ( ry < initRadius / 2 ) {
-		    dy = -dy;
-	    }
-	    if ( rx < initRadius / 2 ) {
-		    dx = -dx;
-	    }
-	}
-
+        //when ball is collapsed enough, push off from wall
+        if ( ry < initRadius / 2 ) {
+	        dy = -dy;
+        } else if ( rx < initRadius / 2 ) {
+	        dx = -dx;
+        }
+    }
 	coord = QPoint(x,y);
 	curRadius = QSize(rx,ry);
 

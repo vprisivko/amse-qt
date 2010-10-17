@@ -125,6 +125,8 @@ void CalcLog::loadFromFile( QString fileName ) {
     updateStatusBar();
     calcDialog->setCurrentValue(lastResult);
 
+    inStream.readLine(2);
+
     calcLog->setText( inStream.readAll() );
 }
 

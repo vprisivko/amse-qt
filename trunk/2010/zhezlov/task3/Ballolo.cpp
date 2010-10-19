@@ -13,11 +13,11 @@ Ballolo::Ballolo( QWidget* parent ):
 
 	qsrand( (uint)time(0) );
 
-	b.r = 50;
-	b.x = qrand() % 300 + 50;
-	b.y = qrand() % 200 + 50;
-	b.vx = qrand() % 200;
-	b.vy = qrand() % 200;
+        ball.r = 50;
+        ball.x = qrand() % 300 + 50;
+        ball.y = qrand() % 200 + 50;
+        ball.vx = qrand() % 200;
+        ball.vy = qrand() % 200;
 
 	drawTimerId = startTimer( 25 );
 	startTimer(1);
@@ -46,30 +46,39 @@ void Ballolo::paintEvent( QPaintEvent* e){
 
 	double h,w;
 
-	w = 2 * b.r;
-	if ( b.x < b.r ) w = 2 * b.x;
-	if ( r.width() - b.x < b.r ) w = 2* ( r.width() - b.x );
+        w = 2 * ball.r;
+        if ( ball.x < ball.r ) w = 2 * ball.x;
+        if ( r.width() - ball.x < ball.r ) w = 2* ( r.width() - ball.x );
 
-	h = 2 * b.r;
-	if ( b.y < b.r ) h = 2 * b.y;
-	if ( r.height() - b.y < b.r ) h = 2 * ( r.height() - b.y );
+        h = 2 * ball.r;
+        if ( ball.y < ball.r ) h = 2 * ball.y;
+        if ( r.height() - ball.y < ball.r ) h = 2 * ( r.height() - ball.y );
 
 	painter.setBrush( QColor(180, 0, 0) );
-	painter.drawEllipse( b.x - w/2, b.y - h/2, w, h);
+        painter.drawEllipse( ball.x - w/2, ball.y - h/2, w, h);
 
 }
 
 
 void Ballolo::moveBall(){
 
-	if ( b.x < b.r / 2 ) b.vx = -b.vx;
-	if ( b.y < b.r / 2 ) b.vy = -b.vy;
+        if ( ball.x < ball.r / 2 ) ball.vx = -ball.vx;
+        if ( ball.y < ball.r / 2 ) ball.vy = -ball.vy;
 
-	if ( rect().width() - b.x < b.r / 2 ) b.vx = - fabs( b.vx );
-	if ( rect().height() - b.y < b.r / 2 ) b.vy = - fabs( b.vy );
+        if ( rect().width() - ball.x < ball.r / 2 ) ball.vx = - fabs( ball.vx );
+        if ( rect().height() - ball.y < ball.r / 2 ) ball.vy = - fabs( ball.vy );
 
-	b.x += b.vx / 1000;
-	b.y += b.vy / 1000;
+        ball.x += ball.vx / 1000;
+        ball.y += ball.vy / 1000;
 
 }
 
+
+void Ballolo::resizeEvent( QResizeEvent* e ){
+
+    QSize widgetSize = e->size();
+
+    if ( ball.x - ball.r/2 > widgetSize.width() ) ball.x = widgetSize.width() - ball.r/2;
+    if ( ball.y - ball.r/2 > widgetSize.height() ) ball.y = widgetSize.height() - ball.r/2;
+
+}

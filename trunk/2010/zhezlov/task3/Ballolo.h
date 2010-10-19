@@ -5,6 +5,7 @@
 #include <QDialog>
 #include <QEvent>
 #include <QPaintEvent>
+#include <QResizeEvent>
 
 class Ballolo: public QDialog{
 
@@ -17,10 +18,11 @@ public:
 protected:
 	virtual void timerEvent( QTimerEvent* e );
 	virtual void paintEvent( QPaintEvent* e );
+        virtual void resizeEvent( QResizeEvent* e );
 
-	struct ball {
+        struct Ball {
 		double x, y, vx, vy, r;
-	} b;
+        } ball;
 
 	void moveBall();
 

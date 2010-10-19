@@ -1,0 +1,6 @@
+Warnings 
+
+kkv@debian:/ws/amse-qt/2010/ukhorskaya/task3$ qmake && make
+WARNING: Failure to find: Widget.ui
+make: *** No rule to make target `Widget.ui', needed by `ui_Widget.h'.  Stop.
+

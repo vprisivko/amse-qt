@@ -1,0 +1,23 @@
+kkv@debian:/ws/amse-qt/2010/talanov/Task4$ make distclean
+rm -f moc_calculator.cpp moc_main_window.cpp
+rm -f calculator.o main.o main_window.o moc_calculator.o moc_main_window.o
+rm -f *~ core *.core
+rm -f Task4 
+rm -f Makefile
+kkv@debian:/ws/amse-qt/2010/talanov/Task4$ qmake
+kkv@debian:/ws/amse-qt/2010/talanov/Task4$ make
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. -o calculator.o calculator.cpp
+In file included from calculator.cpp:1:
+calculator.h:5:27: error: QTGui/QLineEdit: No such file or directory
+In file included from calculator.cpp:1:
+calculator.h:20: warning: type qualifiers ignored on function return type
+calculator.h:44: error: ISO C++ forbids declaration of ‘QLineEdit’ with no type
+calculator.h:44: error: expected ‘;’ before ‘*’ token
+calculator.cpp: In constructor ‘Calculator::Calculator(QWidget*, Qt::WFlags)’:
+calculator.cpp:18: error: ‘myLineEdit’ was not declared in this scope
+calculator.cpp: In member function ‘void Calculator::setValue(const QString&)’:
+calculator.cpp:62: error: ‘myLineEdit’ was not declared in this scope
+calculator.cpp: At global scope:
+calculator.cpp:95: warning: type qualifiers ignored on function return type
+make: *** [calculator.o] Error 1
+

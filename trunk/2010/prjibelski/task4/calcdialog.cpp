@@ -10,7 +10,7 @@ CalcDialog::CalcDialog(QWidget *parent) :
 {
     this->createDialog();
 
-    currentValue = 0;
+    currentValue = 0.0;
 
     connect( plusButton, SIGNAL(pressed()), this, SLOT(plusSlot()) );
     connect( minusButton, SIGNAL(pressed()), this, SLOT(minusSlot()) );
@@ -39,7 +39,7 @@ void CalcDialog::createDialog() {
     this->layout()->addItem(buttonLayout);
 }
 
-void CalcDialog::sendString(int arg1, int arg2, char operation) {
+void CalcDialog::sendString(double arg1, double arg2, char operation) {
     emit newString(
             QString("%1 %2 %3 = %4").arg(arg1).arg(operation).arg(arg2).arg(currentValue),
             currentValue );
@@ -47,39 +47,39 @@ void CalcDialog::sendString(int arg1, int arg2, char operation) {
     numLine->setText("");
 }
 
-void CalcDialog::setCurrentValue(int value) {
+void CalcDialog::setCurrentValue(double value) {
     currentValue = value;
 }
 
 void CalcDialog::plusSlot() {
-    int arg1 = currentValue;
-    int arg2 = numLine->text().toInt();
+    double arg1 = currentValue;
+    double arg2 = numLine->text().toDouble();
     currentValue = arg1 + arg2;
 
     sendString(arg1,arg2,'+');
 }
 
 void CalcDialog::minusSlot() {
-    int arg1 = currentValue;
-    int arg2 = numLine->text().toInt();
+    double arg1 = currentValue;
+    double arg2 = numLine->text().toDouble();
     currentValue = arg1 - arg2;
 
     sendString(arg1,arg2,'-');
 }
 
 void CalcDialog::mulSlot() {
-    int arg1 = currentValue;
-    int arg2 = numLine->text().toInt();
+    double arg1 = currentValue;
+    double arg2 = numLine->text().toDouble();
     currentValue = arg1 * arg2;
 
     sendString(arg1,arg2,'*');
 }
 
 void CalcDialog::divSlot() {
-    int arg1 = currentValue;
-    int arg2 = numLine->text().toInt();
+    double arg1 = currentValue;
+    double arg2 = numLine->text().toDouble();
 
-    if (arg2 != 0) {
+    if (arg2 != 0.0) {
         currentValue = arg1 / arg2;
         sendString(arg1,arg2,'/');
     }

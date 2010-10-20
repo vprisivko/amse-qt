@@ -11,10 +11,10 @@ Q_OBJECT;
 
 public:
     CalcDialog(QWidget *parent = 0);
-    void setCurrentValue(int value);
+    void setCurrentValue(double value);
 
 signals:
-    void newString(QString logString, int result);
+    void newString(QString logString, double result);
 
 private slots:
     void plusSlot();
@@ -24,10 +24,10 @@ private slots:
 
 private:
     void createDialog();
-    void sendString(int arg1, int arg2, char operation);
+    void sendString(double arg1, double arg2, char operation);
     void closeCurrentFile();
 
-    int currentValue;
+    double currentValue;
 
     QPushButton* plusButton;
     QPushButton* minusButton;

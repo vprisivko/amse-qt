@@ -39,7 +39,6 @@ class Calculator : public QMainWindow
 
 public:
     Calculator(QWidget *parent = 0);
-    ~Calculator() {}
 
 private:
 	void createActions();
@@ -54,6 +53,6 @@ public slots:
 	void save();
 	void open();
 	void revert();
-	void writeLog(int, int, int, char);
+	void writeLog(double, double, double, char) const;
 };
 #endif //CALCULATOR_H

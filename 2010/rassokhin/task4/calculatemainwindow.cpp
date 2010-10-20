@@ -80,7 +80,7 @@ void CalculateMainWindow::connectSignals() {
 
 void CalculateMainWindow::fileOpen() {
     QString newFileName = QFileDialog::getOpenFileName(this, tr("Open log"),
-            QDir::homePath(), tr("Calc log files (*.calc.log)") );
+            QDir::homePath(), tr("Calc log files(*.calc.log);;All files(*.*)") );
     if (newFileName == QString::null) return;
     logName = newFileName;
     sbFileName->setText(logName);
@@ -91,7 +91,7 @@ void CalculateMainWindow::fileOpen() {
 void CalculateMainWindow::fileSave() {
     if (logText->toPlainText().isEmpty() ) return;
     QString saveFileName = QFileDialog::getSaveFileName(this, tr("Save log"),
-            QDir::homePath(), tr("Calc log files (*.calc.log)") );
+            QDir::homePath(), tr("Calc log files(*.calc.log);;All files(*.*)") );
     if (saveFileName.isEmpty()) return;
     saveLog(saveFileName);
 }

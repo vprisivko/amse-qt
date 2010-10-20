@@ -13,6 +13,9 @@ MovingBallDialog::MovingBallDialog(QWidget *parent)
     ball.velocity = QPointF(63.3f,25.7);
     drawTimer->start(20);
     myPainter = new QPainter();
+
+    setMinimumWidth(100);
+    setMinimumHeight(100);
 }
 
 MovingBallDialog::~MovingBallDialog() {
@@ -67,6 +70,11 @@ void MovingBallDialog::MyBall::process(qreal dt, QRectF borders) {
     else if( position.y() + defR >= borders.height())
         radiuses.setY(abs(borders.height()-position.y()));
     else radiuses.setY(defR);
+
+    if (position.x() < borders.x()) position.setX(borders.x());
+    if (position.x() > borders.width()) position.setX(borders.width());
+    if (position.y() < borders.y()) position.setY(borders.y());
+    if (position.y() > borders.height()) position.setY(borders.height());
 
 }
 

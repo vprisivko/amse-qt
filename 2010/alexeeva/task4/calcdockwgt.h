@@ -7,13 +7,15 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QErrorMessage>
+#include <QDoubleValidator>
 
 class CalcDockWgt : public QWidget
 {
     Q_OBJECT
 
-    int m_firstOperand;
-    int m_secondOperand;
+    double m_firstOperand;
+    double m_secondOperand;
 
     QLineEdit * m_input;
     QPushButton * m_butMultiply;
@@ -29,16 +31,15 @@ public slots:
 	void add();
 
 signals:
-	void plus_signal(int, int, int, char);
-	void minus_signal(int, int, int, char);
-	void multiply_signal(int, int, int, char);
-	void divide_signal(int, int, int, char);
+	void plus_signal(double, double, double, char);
+	void minus_signal(double, double, double, char);
+	void multiply_signal(double, double, double, char);
+	void divide_signal(double, double, double, char);
 
 public:
     CalcDockWgt(QWidget *parent = 0);
-    ~CalcDockWgt() {}
 
-    void setLastResult(int);
+    void setLastResult(double);
 
 private:
 	void createItems();

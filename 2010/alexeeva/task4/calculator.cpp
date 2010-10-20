@@ -21,7 +21,6 @@ void Calculator::createActions(){
     m_openCalcWidget = new QAction("&Open calculator panel", this);
     m_openCalcWidget->setCheckable(true);
 
-
     m_open->setShortcut(QKeySequence("Ctrl+O"));
     m_save->setShortcut(QKeySequence("Ctrl+S"));
     m_revert->setShortcut(QKeySequence("Ctrl+R"));
@@ -75,10 +74,10 @@ void Calculator::createDockWidget(){
 	m_dockWgt->setAllowedAreas(Qt::AllDockWidgetAreas);
 
 	addDockWidget(Qt::RightDockWidgetArea, m_dockWgt);
-	QObject::connect(m_calculator, SIGNAL(plus_signal(int, int, int, char)), this, SLOT(writeLog(int, int, int, char)));
-	QObject::connect(m_calculator, SIGNAL(minus_signal(int, int, int, char)), this, SLOT(writeLog(int, int, int, char)));
-	QObject::connect(m_calculator, SIGNAL(multiply_signal(int, int, int, char)), this, SLOT(writeLog(int, int, int, char)));
-	QObject::connect(m_calculator, SIGNAL(divide_signal(int, int, int, char)), this, SLOT(writeLog(int, int, int, char)));
+	QObject::connect(m_calculator, SIGNAL(plus_signal(double, double, double, char)), this, SLOT(writeLog(double, double, double, char)));
+	QObject::connect(m_calculator, SIGNAL(minus_signal(double, double, double, char)), this, SLOT(writeLog(double, double, double, char)));
+	QObject::connect(m_calculator, SIGNAL(multiply_signal(double, double, double, char)), this, SLOT(writeLog(double, double, double, char)));
+	QObject::connect(m_calculator, SIGNAL(divide_signal(double, double, double, char)), this, SLOT(writeLog(double, double, double, char)));
 }
 
 void Calculator::connectEvents(){
@@ -91,10 +90,14 @@ void Calculator::connectEvents(){
 }
 void Calculator::save(){
 	if(m_fileName == "Untitled"){
-		QString fileName = QFileDialog::getSaveFileName(this, "Save file");
+		QString fileName = QFileDialog::getSaveFileName(this, "Save file",".","All files (*.ren)");
 		if(fileName != "") m_fileName = fileName;
 		m_logName->setText(m_fileName);
 	}
+
+    if(!m_fileName.endsWith(".ren")){
+    	m_fileName.append(".ren");
+    }
 
 	if(m_fileName != "Untitled"){
 		QFile file(m_fileName);
@@ -105,7 +108,7 @@ void Calculator::save(){
 	}
 }
 void Calculator::open(){
-	QString fileName = QFileDialog::getOpenFileName(this, "Open file");
+	QString fileName = QFileDialog::getOpenFileName(this, "Open file",".","All files (*.ren)");
 	if(fileName != "") m_fileName = fileName;
 	m_logName->setText(m_fileName);
 
@@ -113,7 +116,7 @@ void Calculator::open(){
 		QFile file(m_fileName);
 		if(file.open(QIODevice::ReadWrite)){
 			QString lastResult = QString(file.readLine());
-			m_calculator->setLastResult(lastResult.toInt());
+			m_calculator->setLastResult(lastResult.toDouble());
 			m_lastResult->setText(lastResult);
 			m_edit->setText(QString(file.readAll()));
 			file.close();
@@ -125,21 +128,21 @@ void Calculator::revert(){
 	if(m_fileName == "Untitled"){
 		m_edit->clear();
 		m_calculator->setLastResult(NULL);
-		m_lastResult->setText("NULL");
+		m_lastResult->setText("Undefined");
 		return;
 	}
 	QFile file(m_fileName);
 
 	if(file.open(QIODevice::ReadWrite)){
 		QString lastResult = QString(file.readLine());
-		m_calculator->setLastResult(lastResult.toInt());
+		m_calculator->setLastResult(lastResult.toDouble());
 		m_lastResult->setText(lastResult);
 		m_edit->setText(QString(file.readAll()));
 		file.close();
 	}
 }
 
-void Calculator::writeLog(int result, int secondOperand, int firstOperand, char sign){
+void Calculator::writeLog(double result, double secondOperand, double firstOperand, char sign) const {
 	m_edit->append(QString::number(firstOperand)+QString(sign)+QString::number(secondOperand)+"="+QString::number(result));
 	m_lastResult->setText(QString::number(result));
 }

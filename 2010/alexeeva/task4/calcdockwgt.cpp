@@ -10,6 +10,8 @@ CalcDockWgt::CalcDockWgt(QWidget *parent)
 
 void CalcDockWgt::createItems(){
     m_input = new QLineEdit(this);
+    m_input->setValidator(new QDoubleValidator());
+
     m_butMultiply = new QPushButton("*", this);
     m_butDivide = new QPushButton("/", this);
     m_butPlus = new QPushButton("+", this);
@@ -43,29 +45,41 @@ void CalcDockWgt::connectAllTheStuff(){
 }
 
 void CalcDockWgt::add(){
-	m_secondOperand = m_input->text().toInt();
-	emit plus_signal(m_firstOperand += m_secondOperand, m_secondOperand, m_firstOperand, '+');
+	m_secondOperand = m_input->text().toDouble();
+	emit plus_signal(m_firstOperand + m_secondOperand, m_secondOperand, m_firstOperand, '+');
+	m_firstOperand += m_secondOperand;
 	m_input->clear();
 }
 
 void CalcDockWgt::substract(){
-	m_secondOperand = m_input->text().toInt();
-	emit minus_signal(m_firstOperand -= m_secondOperand, m_secondOperand, m_firstOperand, '-');
+	m_secondOperand = m_input->text().toDouble();
+	emit minus_signal(m_firstOperand - m_secondOperand, m_secondOperand, m_firstOperand, '-');
+	m_firstOperand -= m_secondOperand;
 	m_input->clear();
 }
 
 void CalcDockWgt::multiply(){
-	m_secondOperand = m_input->text().toInt();
-	emit multiply_signal(m_firstOperand *= m_secondOperand, m_secondOperand, m_firstOperand, '*');
+	m_secondOperand = m_input->text().toDouble();
+	emit multiply_signal(m_firstOperand * m_secondOperand, m_secondOperand, m_firstOperand, '*');
+	m_firstOperand *= m_secondOperand;
 	m_input->clear();
 }
 
 void CalcDockWgt::divide(){
-	m_secondOperand = m_input->text().toInt();
-	emit divide_signal(m_firstOperand /= m_secondOperand, m_secondOperand, m_firstOperand, '/');
+	m_secondOperand = m_input->text().toDouble();
+
+	if(m_secondOperand == 0){
+		QErrorMessage * nullDivisionError = new QErrorMessage(this);
+		nullDivisionError->setWindowTitle("Warning!");
+		nullDivisionError->showMessage("Don't try to divide on zero!");
+		return;
+	}
+
+	emit divide_signal(m_firstOperand / m_secondOperand, m_secondOperand, m_firstOperand, '/');
+	m_firstOperand /= m_secondOperand;
 	m_input->clear();
 }
 
-void CalcDockWgt::setLastResult(int result){
+void CalcDockWgt::setLastResult(double result){
 	m_firstOperand = result;
 }

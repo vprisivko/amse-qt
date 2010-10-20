@@ -6,9 +6,6 @@ CalcLog::CalcLog(QWidget *parent)
     createWindow();
 
     calcDialog = new CalcDialog(this);
-    //fileDialog = new QFileDialog(this);
-    //currentFile = new QFile();
-    //currentStream = new QTextStream();
 
     currentFileName = "";
     connectSlots();
@@ -52,7 +49,7 @@ void CalcLog::createWindow() {
 }
 
 void CalcLog::connectSlots() {
-    connect( calcDialog, SIGNAL( newString(QString, int) ), this, SLOT( addString(QString, int) ) );
+    connect( calcDialog, SIGNAL( newString(QString, double) ), this, SLOT( addString(QString, double) ) );
 
     connect( saveFileAction, SIGNAL( triggered() ), this, SLOT(saveFileSlot()) );
     connect( saveCurrentFileAction, SIGNAL( triggered() ), this, SLOT(saveCurrentFileSlot()) );
@@ -77,7 +74,7 @@ void CalcLog::updateStatusBar() {
     lastResultLabel->setText("Last result: " + QString::number(lastResult));
 }
 
-void CalcLog::addString(QString logString, int result) {
+void CalcLog::addString(QString logString, double result) {
     calcLog->append(logString);
     lastResult = result;
     updateStatusBar();
@@ -133,7 +130,7 @@ void CalcLog::loadFromFile( QString fileName ) {
 void CalcLog::revertSlot() {
     if (currentFileName == "") {
         calcLog->setText("");
-        lastResult = 0;
+        lastResult = 0.0;
         calcDialog->setCurrentValue(0);
         updateStatusBar();
     }

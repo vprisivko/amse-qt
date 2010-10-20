@@ -23,7 +23,7 @@ public:
     ~CalcLog();
 
 public slots:
-    void addString(QString logString, int result);
+    void addString(QString logString, double result);
 
 private slots:
     void openFileSlot();
@@ -56,11 +56,7 @@ private:
 
     QString currentFileName;
 
-    //QFileDialog* fileDialog;
-    //QFile* currentFile;
-    //QTextStream* currentStream;
-
-    int lastResult;
+    double lastResult;
 };
 
 #endif // CALCLOG_H

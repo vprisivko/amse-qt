@@ -14,10 +14,8 @@ public:
     int vx, vy;
     QPainter *p;
     QTimer *bTimer;
-    int compressionx, compressiony; //change circle to ellipse //
-    BallDialog( int rad = 10, int _vx = 1, int _vy = 2 );
-    void paintEvent( QPaintEvent * );
-    void press( int axes );
+    BallDialog( int rad = 20, int _vx = 1, int _vy = 2 );
+    void paintEvent( QPaintEvent *);
 public slots:
     void timeEvent();
 };

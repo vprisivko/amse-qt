@@ -6,15 +6,15 @@
 
 Table::Table(qint16 port, QWidget *parent): QDialog(parent) {
     setFixedSize(TABLE_WIDTH, TABLE_HEIGHT);
-
+    started = false;
     my_racket.my_x = my_ball.my_x = TABLE_WIDTH / 2;
     my_racket.my_dx = 0;
-    my_ball.my_y = TABLE_HEIGHT / 2;
+    my_ball.my_y = TABLE_HEIGHT - BALL_RADIUS - RACKET_HEIGHT;
     my_ball.my_r = BALL_RADIUS;
     QTime midnight(0, 0, 0);
     qsrand(midnight.secsTo(QTime::currentTime()));
-    my_ball.my_dx = qrand() % (BALL_AVERAGE_SPEED*2) - BALL_AVERAGE_SPEED;
-    my_ball.my_dy = qrand() % (BALL_AVERAGE_SPEED*2) - BALL_AVERAGE_SPEED;
+    my_ball.my_dx = 0;
+    my_ball.my_dy = 0;
     my_timerID = startTimer(BALL_TIMER_INTERVAL);
     setWindowTitle(QString::number(port));
     my_ip.setAddress("127.0.0.1");
@@ -39,8 +39,11 @@ void Table::paintEvent(QPaintEvent* pe) {
 
 void Table::timerEvent(QTimerEvent* e) {
     if (e->timerId() == my_timerID) {
-        my_ball.move(my_racket);
         my_racket.move();
+        my_ball.move(my_racket, this);
+        if (!started) {
+            my_ball.my_x = my_racket.my_x;
+        }
         my_racket.my_dx = 0;
         update();
     }
@@ -56,7 +59,7 @@ void Table::Racket::move() {
     }
 }
 
-void Table::Ball::move(Racket& racket) {
+void Table::Ball::move(Racket& racket, Table* table) {
     my_x += my_dx;
     my_y += my_dy;
     my_rxEff = my_ryEff = my_r;
@@ -79,13 +82,14 @@ void Table::Ball::move(Racket& racket) {
         }
     }
     if (my_y + my_r > TABLE_HEIGHT) {
-        my_x = TABLE_WIDTH / 2;
-        my_y = TABLE_HEIGHT / 2;
+        racket.my_x = my_x = TABLE_WIDTH / 2;
+        my_y = TABLE_HEIGHT - BALL_RADIUS - RACKET_HEIGHT;
         my_r = BALL_RADIUS;
         QTime midnight(0, 0, 0);
         qsrand(midnight.secsTo(QTime::currentTime()));
-        my_dx = qrand() % (BALL_AVERAGE_SPEED*2) - BALL_AVERAGE_SPEED;
-        my_dy = qrand() % (BALL_AVERAGE_SPEED*2) - BALL_AVERAGE_SPEED;
+        my_dx = 0;
+        my_dy = 0;
+        table->started = false;
     }
     if (my_y - my_r < 0) {
         my_ryEff = my_y;
@@ -116,6 +120,12 @@ void Table::processTheDatagram(QByteArray datagram) {
     }
     if (data == "Left") {
         my_racket.my_dx = -RACKET_SPEED;
+        return;
+    }
+    if ((data == "Start") && (!started)) {
+        started = true;
+        my_ball.my_dx = qrand() % (BALL_AVERAGE_SPEED*2) - BALL_AVERAGE_SPEED;
+        my_ball.my_dy = -(qrand() % (BALL_AVERAGE_SPEED - 1) + 1);
         return;
     }
 }

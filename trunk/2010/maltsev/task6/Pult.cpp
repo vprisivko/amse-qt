@@ -36,8 +36,10 @@ void Pult::setView() {
     mainLayout->addItem(layout1);
     layout1 = new QHBoxLayout();
     my_leftButton = new QPushButton("<", this);
+    my_startButton = new QPushButton("Start", this);
     my_rightButton = new QPushButton(">", this);
     layout1->addWidget(my_leftButton);
+    layout1->addWidget(my_startButton);
     layout1->addWidget(my_rightButton);
     mainLayout->addItem(layout1);
     my_leftButton->setAutoRepeat(true);
@@ -53,6 +55,8 @@ void Pult::connectButtons() {
             this, SLOT(setContact()));
     connect(my_leftButton, SIGNAL(clicked()),
             this, SLOT(sendLeft()));
+    connect(my_startButton, SIGNAL(clicked()),
+            this, SLOT(sendStart()));
     connect(my_rightButton, SIGNAL(clicked()),
             this, SLOT(sendRight()));
 }
@@ -89,4 +93,13 @@ void Pult::sendLeft() {
         return;
     }
     my_udpSocket->writeDatagram("Left", my_ipTo, my_portTo);
+}
+
+void Pult::sendStart() {
+    if (!isSet) {
+        QErrorMessage* ipError = new QErrorMessage(this);
+        ipError->showMessage("Contact is not set");
+        return;
+    }
+    my_udpSocket->writeDatagram("Start", my_ipTo, my_portTo);
 }

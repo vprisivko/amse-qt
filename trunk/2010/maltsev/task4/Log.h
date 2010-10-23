@@ -4,6 +4,7 @@
 #include "Calculator.h"
 #include <QMainWindow>
 #include <QLabel>
+#include <QTextEdit>
 
 class Log: public QMainWindow {
 Q_OBJECT;
@@ -11,14 +12,14 @@ Q_OBJECT;
 public:
   Log(QWidget *w = 0);
   ~Log();
-  int result;
+  double result;
 
 private:
   bool opened;
-  QLabel* l, *logName, *lastResult;
+  QLabel *logName, *lastResult;
+  QTextEdit *field;
   QString fileName;
   Calculator* c;
-  bool isEmpty;
 
 public slots:
   void Open();

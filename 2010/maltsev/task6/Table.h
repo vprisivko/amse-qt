@@ -21,6 +21,7 @@ Q_OBJECT;
 
 public:
     Table(qint16, QWidget *w = 0);
+    bool started;
 
 private:
     struct Racket {
@@ -30,7 +31,7 @@ private:
 
     struct Ball {
         int my_x, my_y, my_r, my_rxEff, my_ryEff, my_dx, my_dy;
-        void move(Racket&);
+        void move(Racket&, Table*);
     } my_ball;
 
     int my_timerID;

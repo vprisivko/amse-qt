@@ -17,7 +17,7 @@ public:
     Pult(qint16, QWidget *w = 0);
 
 private:
-    QPushButton *my_leftButton, *my_rightButton, *my_setButton;
+    QPushButton *my_leftButton, *my_rightButton, *my_setButton, *my_startButton;
     QLineEdit *my_ipEdit, *my_portEdit;
     QUdpSocket *my_udpSocket;
     QHostAddress my_ip, my_ipTo;
@@ -32,6 +32,7 @@ private slots:
     void sendRight();
     void sendLeft();
     void setContact();
+    void sendStart();
 
 };
 

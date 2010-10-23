@@ -2,16 +2,15 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QString>
+#include <QMessageBox>
 
-Calculator::Calculator(int* res, QLabel* lg, QLabel* r, bool* b, QWidget *parent): QDialog(parent) {
+Calculator::Calculator(double* res, QTextEdit* lg, QLabel* r, QWidget *parent): QDialog(parent) {
   presult = res;
   result = *presult;
-  verynew = b;
   log = lg;
   reslb = r;
-  stack = 0;
   setLayout(new QVBoxLayout());
-  l = new QLineEdit(QString::number(result), this);
+  l = new QLineEdit("0", this);
   l->setAlignment(Qt::AlignRight);
   layout()->addWidget(l);
   QHBoxLayout *hl = new QHBoxLayout();
@@ -34,66 +33,44 @@ Calculator::Calculator(int* res, QLabel* lg, QLabel* r, bool* b, QWidget *parent
           this, SLOT(Div()) );
 }
 
-void Calculator::Process() {
-  int arg = l->text().toInt();
-  l->setText("0");
-  l->setReadOnly(false);
-  if (stack == 0) {
-    result = arg;
-    return;
-  }
-  *verynew = false;
-  if (stack == '+') {
-    log->setText(log->text() + QString::number(result) + " + " + QString::number(arg) + " = " + QString::number(result + arg) + "\n");
-    *presult = result + arg;
-    result = *presult;
-    reslb->setText(QString::number(result));
-  }
-  if (stack == '-') {
-    log->setText(log->text() + QString::number(result) + " - " + QString::number(arg) + " = " + QString::number(result - arg) + "\n");
-    *presult = result - arg;
-    result = *presult;
-    reslb->setText(QString::number(result));
-  }
-  if (stack == '*') {
-    log->setText(log->text() + QString::number(result) + " * " + QString::number(arg) + " = " + QString::number(result * arg) + "\n");
-    *presult = result * arg;
-    result = *presult;
-    reslb->setText(QString::number(result));
-  }
-  if (stack == '/') {
-    log->setText(log->text() + QString::number(result) + " / " + QString::number(arg) + " = " + QString::number(result / arg) + "\n");
-    *presult = result / arg;
-    result = *presult;
-    reslb->setText(QString::number(result));
-  }
-}
-
-void Calculator::Reload(int * r) {
-  stack = 0;
-  presult = r;
+void Calculator::Reload(double *) {
   result = *presult;
-  l->setText(QString::number(result));
-  l->setReadOnly(true);
-  stack = 0;
 }
 
 void Calculator::Add() {
-  Process();
-  stack = '+';
+  double arg = l->text().toDouble();
+  log->append(QString::number(result) + " + " + QString::number(arg) + " = " + QString::number(result + arg));
+    *presult = result + arg;
+    result = *presult;
+    reslb->setText(QString::number(result));
 }
 
 void Calculator::Sub() {
-  Process();
-  stack = '-';
+  double arg = l->text().toDouble();
+  log->append(QString::number(result) + " - " + QString::number(arg) + " = " + QString::number(result - arg));
+    *presult = result - arg;
+    result = *presult;
+    reslb->setText(QString::number(result));
 }
 
 void Calculator::Mul() {
-  Process();
-  stack = '*';
+  double arg = l->text().toDouble();
+  log->append(QString::number(result) + " * " + QString::number(arg) + " = " + QString::number(result * arg));
+    *presult = result * arg;
+    result = *presult;
+    reslb->setText(QString::number(result));
 }
 
 void Calculator::Div() {
-  Process();
-  stack = '/';
+  double arg = l->text().toDouble();
+  if (arg == 0) {
+    QMessageBox zeroBox;
+    zeroBox.setText("Please, do not divide by zero.");
+    zeroBox.exec();
+    return;
+  }
+  log->append(QString::number(result) + " / " + QString::number(arg) + " = " + QString::number(result / arg));
+    *presult = result / arg;
+    result = *presult;
+    reslb->setText(QString::number(result));
 }

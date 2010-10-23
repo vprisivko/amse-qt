@@ -7,26 +7,23 @@
 #include <QHBoxLayout>
 #include <QString>
 #include <QStatusBar>
-#include <stdio.h>
 #include <QSettings>
 
 Log::Log(QWidget *parent): QMainWindow(parent) {
   opened = false;
-  isEmpty = true;
   fileName = "";
-  l = new QLabel("", this);
+  field = new QTextEdit("", this);
+  field->setReadOnly(true);
   setCentralWidget(new QDialog());
   QVBoxLayout *ly = new QVBoxLayout(centralWidget());
-  ly->addWidget(l,0, Qt::AlignTop);
-  //centralWidget()->setLayout(new QVBoxLayout());
- // centralWidget()->layout()->addWidget(l, Qt::AlignTop);
+  ly->addWidget(field,0);
   logName = new QLabel("Unsaved File", this);
   result = 0;
   lastResult = new QLabel("0", this);
-  c = new Calculator(&result, l, lastResult, &isEmpty, this);
-  //statusBar()->setLayout(new QHBoxLayout());
+  c = new Calculator(&result, field, lastResult, this);
   statusBar()->addWidget(logName);
   statusBar()->addPermanentWidget(lastResult);
+
   QAction * openact = new QAction("&Open", this);
   QAction * saveact = new QAction("&Save", this);
   QAction * revertact = new QAction("&Revert", this);
@@ -76,13 +73,12 @@ void Log::Open() {
     ++i;
   }
   lastResult->setText(data);
-  result = data.toInt();
-  c->Reload(&result);
+  result = data.toDouble();
   logName->setText(fileName1);
-  l->setText(QString(p + i + 1));
+  field->setText(QString(p + i + 1));
   opened = true;
-  isEmpty = false;
   fileName = fileName1;
+  c->Reload(&result);
 }
 
 void Log::Save() {
@@ -94,7 +90,7 @@ void Log::Save() {
   QFile f(fileName1);
   if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) return;
   f.write(QByteArray((lastResult->text() + "\n").toAscii()).data());
-  f.write(QByteArray(l->text().toAscii()).data());
+  f.write(QByteArray(field->toPlainText().toAscii()).data());
   opened = true;
   fileName = fileName1;
   logName->setText(fileName);
@@ -114,12 +110,11 @@ void Log::Revert() {
   }
   lastResult->setText(data);
   result = data.toInt();
-  c->Reload(&result);
-  l->setText(QString(p + i + 1));
+  field->setText(QString(p + i + 1));
   opened = true;
+  c->Reload(&result);
 }
 
 void Log::Calc() {
   c->setVisible(!c->isVisible());
-  if (!isEmpty) c->Reload(&result);
 }

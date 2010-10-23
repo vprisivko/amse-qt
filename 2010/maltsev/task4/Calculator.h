@@ -5,20 +5,18 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QTextEdit>
 
 class Calculator: public QDialog {
 Q_OBJECT;
 
 public:
-  Calculator(int*, QLabel*, QLabel*, bool*, QWidget *w = 0);
-  int *presult;
-  int result;
-  QLabel* log;
+  Calculator(double*, QTextEdit*, QLabel*, QWidget *w = 0);
+  double *presult;
+  double result;
+  QTextEdit* log;
   QLabel* reslb;
-  bool * verynew;
-  QChar stack;
-  void Process();
-  void Reload(int *);
+  void Reload(double *);
 
 private:
   QLineEdit* l;

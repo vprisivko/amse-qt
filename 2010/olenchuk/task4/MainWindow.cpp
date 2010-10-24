@@ -87,10 +87,10 @@ void MainWindow :: slotOpenFile() {
 	position = cursor.position();
 	cursor.movePosition(QTextCursor :: PreviousWord, QTextCursor :: KeepAnchor);
 	
-	calculator->setSum(cursor.selectedText().toInt());
+	calculator->setSum(cursor.selectedText().toDouble());
 }
 void MainWindow :: slotSaveFile() { 
-	QString fileName = QFileDialog::getSaveFileName(this);
+	QString fileName = QFileDialog::getSaveFileName(this, "XML files (*.xml)");
 	if (fileName.isEmpty()) {
 		return;
 	}

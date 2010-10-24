@@ -14,12 +14,13 @@ class Calculator : public QDialog {
 		Calculator(QWidget *parent = 0);
 		
 	public:
-		void setSum(int sum);
+		void setSum(double sum);
 	
 	signals:
 		void answer(QString str);	
 	
 	private slots:
+		void enableButton(const QString &text);
 		void plus();
 		void minus();
 		void multiply();
@@ -29,7 +30,7 @@ class Calculator : public QDialog {
 
 	
 	private:
-		int sum;
+		double sum;
 		QString str;
 		QLineEdit *lineEdit;
 		QPushButton *plusButton;

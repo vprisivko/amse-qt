@@ -18,10 +18,12 @@ class MagicBall : public QDialog {
 	private:
 		int x;
 		int y;
+		qreal myWidth;
+		qreal myHeight;
 		struct MyBall {
 			int timer;
-			int defRad;
-			QPoint center;
+			qreal defRad;
+			QPointF center;
 			QPoint radius;
 		};
 

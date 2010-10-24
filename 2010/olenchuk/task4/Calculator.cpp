@@ -3,20 +3,25 @@
 
 Calculator :: Calculator(QWidget *parent) : QDialog(parent) {
 
-	sum = 0;
+	sum = 0.0;
 	
 	
 	setWindowTitle("Magic Calculator");
 	
 
-	lineEdit = new QLineEdit("");
-	lineEdit->setValidator(new QIntValidator());
+	lineEdit = new QLineEdit;
+	lineEdit->setValidator(new QDoubleValidator(lineEdit));
 
-	QHBoxLayout* topLayout = new QHBoxLayout();
 	plusButton = new QPushButton("+");
 	minusButton = new QPushButton("-");
 	multiplyButton = new QPushButton("*");
 	divideButton = new QPushButton("/");
+	plusButton->setEnabled(false);
+	minusButton->setEnabled(false);
+	multiplyButton->setEnabled(false);
+	divideButton->setEnabled(false);
+
+	QHBoxLayout *topLayout = new QHBoxLayout();
 	topLayout->addWidget(plusButton);
 	topLayout->addWidget(minusButton);
 	topLayout->addWidget(multiplyButton);
@@ -27,18 +32,19 @@ Calculator :: Calculator(QWidget *parent) : QDialog(parent) {
 	mainLayout->addItem(topLayout);
 	setLayout(mainLayout);
 
+	connect(lineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(enableButton(const QString &)));
 	connect(plusButton, SIGNAL(clicked()), this, SLOT(plus()));
 	connect(minusButton, SIGNAL(clicked()), this, SLOT(minus()));
 	connect(multiplyButton, SIGNAL(clicked()), this, SLOT(multiply()));
 	connect(divideButton, SIGNAL(clicked()), this, SLOT(divide()));
 }
-void Calculator :: setSum(int sum) {
+void Calculator :: setSum(double sum) {
 	this->sum = sum;
 }
 void Calculator :: plus() {
 	QString str = QString :: number(sum);
 	QString text = lineEdit->text();
-	int number = text.toInt();
+	double number = text.toDouble();
 	sum = sum + number;
 	lineEdit->clear();
 	str.append(" + ");
@@ -48,7 +54,7 @@ void Calculator :: plus() {
 void Calculator :: minus() {
 	QString str = QString :: number(sum);
 	QString text = lineEdit->text();
-	int number = text.toInt();
+	double number = text.toDouble();
 	sum = sum - number;
 	lineEdit->clear();
 	str.append(" - ");
@@ -58,7 +64,7 @@ void Calculator :: minus() {
 void Calculator :: multiply() {
 	QString str = QString :: number(sum);
 	QString text = lineEdit->text();
-	int number = text.toInt();
+	double number = text.toDouble();
 	sum = sum * number;
 	lineEdit->clear();
 	str.append(" * ");
@@ -68,7 +74,7 @@ void Calculator :: multiply() {
 void Calculator :: divide() {
 	QString str = QString :: number(sum);
 	QString text = lineEdit->text();
-	int number = text.toInt();
+	double number = text.toDouble();
 	if (number != 0) {
 		sum = sum / number;
 		lineEdit->clear();
@@ -82,3 +88,17 @@ void Calculator :: send(QString &str) {
 	str.append(QString :: number(sum));
 	emit answer(str);
 }
+void Calculator :: enableButton(const QString &text) {
+	plusButton->setEnabled(!text.isEmpty());
+	minusButton->setEnabled(!text.isEmpty());
+	multiplyButton->setEnabled(!text.isEmpty());
+	divideButton->setEnabled(!text.isEmpty());
+}
+
+
+
+
+
+
+
+

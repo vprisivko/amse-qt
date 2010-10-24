@@ -19,10 +19,11 @@ class BallDialog : public QDialog {
         virtual void paintEvent(QPaintEvent* e);
     
    	private: 
-		int initRadius;
-		QSize curRadius;
-		QPoint coord;
-        int dx,dy;
+            int initRadius;
+            QSize curRadius;
+            QPoint coord;
+            int dx,dy;
+            const int DEFAULT_RADIUS;
     signals:
 
     public slots:

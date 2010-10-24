@@ -11,64 +11,85 @@
 
 #include "BallDialog.h"
 
-BallDialog::BallDialog(QWidget *parent): QDialog(parent) {
-	srand( time(NULL) );
+BallDialog::BallDialog(QWidget *parent): QDialog(parent),  DEFAULT_RADIUS(40) {
+    srand( time(NULL) );
 
-	initRadius = 40;
-	curRadius = QSize(initRadius,initRadius);
-	coord = QPoint( width() / 2 , height() / 2);
-	
-	dx = dy = 0;
-	while (dx == 0 && dy == 0) {
-		dx = rand() % 4 - 2;
-		dy = rand() % 4 - 2;
-	}
+    curRadius = QSize(DEFAULT_RADIUS,DEFAULT_RADIUS);
+    setMinimumSize(DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
+    coord = QPoint( width() / 2 , height() / 2);
 
-	startTimer(10);
+    dx = dy = 0;
+    while (dx == 0 && dy == 0) {
+        dx = rand() % 4 - 2;
+        dy = rand() % 4 - 2;
+    }
+
+    startTimer(10);
 }
 
 void BallDialog::timerEvent(QTimerEvent*) {
   	
- 	int x = coord.x(), y = coord.y();
-	int rx,ry;
-	//moving
-	x += dx;
-	y += dy;	
-	//collapsing ball
-	rx = ry = initRadius;
-	if ( y + initRadius > height() ) {
-		ry -=  y + initRadius - height();
-	} else if ( y - initRadius < 0 ) {
-		ry -= - (y - initRadius);
-	} 
-	if ( x + initRadius > width() ) {
-		rx -= x + initRadius - width();
-	} else if ( x - initRadius < 0 ) {
-		rx -= - ( x - initRadius );
-	}
-	//exception if ball is near both of edges
-	//don't wait for it's collapsing, push off
-	if (rx != initRadius && ry != initRadius) {
-		dy = -dy;
-		dx = -dx;
-	} else {
-        //when ball is collapsed enough, push off from wall
-        if ( ry < initRadius / 2 ) {
-	        dy = -dy;
-        } else if ( rx < initRadius / 2 ) {
-	        dx = -dx;
+    int x = coord.x(), y = coord.y();
+    int rx = curRadius.width();
+    int ry = curRadius.height();
+    int windowHeight = height();
+    int windowWidth = width();
+
+    x += dx;
+    y += dy;
+
+    // if ball is out of window, take it to the window back!
+    if (x > windowWidth - DEFAULT_RADIUS/2) {
+        x = windowWidth - DEFAULT_RADIUS/2;
+    }
+    if (y > windowHeight - DEFAULT_RADIUS/2) {
+        y = windowHeight - DEFAULT_RADIUS/2;
+    }
+
+    if (x < DEFAULT_RADIUS) {
+        rx = x;
+    } else {
+        if (x + DEFAULT_RADIUS > windowWidth) {
+                rx = windowWidth - x;
+        } else {
+                rx = DEFAULT_RADIUS;
         }
     }
-	coord = QPoint(x,y);
-	curRadius = QSize(rx,ry);
+    if (rx <= DEFAULT_RADIUS/2) {
+        dx = -dx;
+    }
 
-   	update();
+    if (y < DEFAULT_RADIUS) {
+        ry = y;
+    } else {
+        if (y + DEFAULT_RADIUS > windowHeight) {
+                ry = windowHeight - y;  // if ball is out of window, take it to the window back!
+
+        } else {
+                ry = DEFAULT_RADIUS;
+        }
+    }
+    if (ry <= DEFAULT_RADIUS/2) {
+        dy = -dy;
+    }
+
+    //exception if ball is near both of edges
+    if (rx < DEFAULT_RADIUS && ry < DEFAULT_RADIUS) {
+        rx = DEFAULT_RADIUS;
+        ry = DEFAULT_RADIUS;
+    }
+
+
+    coord = QPoint(x,y);
+    curRadius = QSize(rx,ry);
+
+    update();
 
 }
 
 void BallDialog::paintEvent(QPaintEvent*) {
 	QPainter p(this);
-	QRadialGradient gradient(coord,initRadius, coord-QPoint(5,5) );
+        QRadialGradient gradient(coord,DEFAULT_RADIUS, coord-QPoint(5,5) );
 	gradient.setColorAt(0.2, Qt::white);
 	gradient.setColorAt(0.8, Qt::red);
 	gradient.setColorAt(1, Qt::black);

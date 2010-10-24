@@ -2,7 +2,7 @@
 #define TASK4_H
 
 #include <QtGui/QMainWindow>
-#include <QTGui/QStatusBar>
+#include <QtGui/QStatusBar>
 #include <QtGui/QLabel>
 #include <QtGui/QAction>
 #include <QtGui/QPlainTextEdit>
@@ -26,7 +26,7 @@ public slots:
   void saveFileAs();
   void revertFile();
   void calculator();
-  void setResult(int);
+  void setResult(qreal);
   void addText(const QString&);
 
 private:
@@ -44,7 +44,7 @@ private:
   //
   QString myFilename;
 
-  int myResult;
+  qreal myResult;
 
   //status bar labels
   QLabel* myStatusResultLabel;

@@ -2,7 +2,7 @@
 #define calculator_h__
 
 #include <QtGui/QDialog>
-#include <QTGui/QLineEdit>
+#include <QtGui/QLineEdit>
 
 class Calculator 
   : public QDialog
@@ -16,8 +16,8 @@ public:
 
 public:
 
-  void setResult(int);
-  const int result() const;
+  void setResult(qreal);
+  qreal result() const;
 
 private slots:
 
@@ -32,14 +32,14 @@ private slots:
 
 signals:
 
-  void resultChanged(int);
+  void resultChanged(qreal);
   void addText(QString);
 
 
 private:
 
-  int myValue;
-  int myResult;
+  qreal myValue;
+  qreal myResult;
 
   QLineEdit* myLineEdit;
 

@@ -72,12 +72,12 @@ void CalculatorLogMW::connectToSlots()
   connect(myCalculatorAction, SIGNAL(triggered()), this, SLOT(calculator()));
 
   connect(myCalculator, SIGNAL(addText(const QString&)), this, SLOT(addText(const QString&)));
-  connect(myCalculator, SIGNAL(resultChanged(int)), this, SLOT(setResult(int)));
+  connect(myCalculator, SIGNAL(resultChanged(qreal)), this, SLOT(setResult(qreal)));
 }
 
 void CalculatorLogMW::openFile()
 {
-  QString newFilename = QFileDialog::getOpenFileName(this, "Select file to open", "", "Log files (*.log)");
+  QString newFilename = QFileDialog::getOpenFileName(this, "Select file to open", "", "Log files (*.log);;All files (*.*)");
   if (newFilename == QString())
   {
     return;
@@ -95,12 +95,12 @@ void CalculatorLogMW::openFile(const QString& filename)
 
   //retrieve last Value
   QString result = file.readLine();
-  setResult(result.toInt());
+  setResult(result.toDouble());
 
   myTextEdit->setPlainText(stream.readAll());
 }
 
-void CalculatorLogMW::setResult(int res)
+void CalculatorLogMW::setResult(qreal res)
 {
   myResult = res;
   if (myResult != myCalculator->result())
@@ -128,7 +128,7 @@ void CalculatorLogMW::saveFile()
 
 void CalculatorLogMW::saveFileAs()
 {
-  QString saveFilename = QFileDialog::getSaveFileName(this, "Select file to save", "", "Log files (*.log)");
+  QString saveFilename = QFileDialog::getSaveFileName(this, "Select file to save", myFilename + ".log", "All files (*.*)");
   if (saveFilename == QString())
   {
     return;

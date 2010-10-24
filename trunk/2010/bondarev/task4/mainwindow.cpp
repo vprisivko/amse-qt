@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent) {
 
     lastResult = 0;
+    lastResultIsExist = false;
     fileName = "";
 
     makeStatusBar();
@@ -95,29 +96,55 @@ void MainWindow::scalculator() {
 void MainWindow::plus() {
     double first = lastResult,
         second = edit->text().toDouble();
-    lastResult = first + second;
-    textEdit->append(QString::number(first) + "+" + QString::number(second) + "=" + QString::number(lastResult));
+    if (lastResultIsExist) {
+        lastResult = first + second;
+        textEdit->append(QString::number(first) + "+" + QString::number(second) + "=" + QString::number(lastResult));
+    } else {
+        lastResult = second;
+        lastResultIsExist = true;
+    }
+    lLastResult->setText(QString::number(lastResult));
 }
 
 void MainWindow::minus() {
     double first = lastResult,
         second = edit->text().toDouble();
-    lastResult = first - second;
-    textEdit->append(QString::number(first) + "-" + QString::number(second) + "=" + QString::number(lastResult));
+    if (lastResultIsExist) {
+        lastResult = first - second;
+        textEdit->append(QString::number(first) + "-" + QString::number(second) + "=" + QString::number(lastResult));
+    } else {
+        lastResult = second;
+        lastResultIsExist = true;
+    }
+    lLastResult->setText(QString::number(lastResult));
 }
 
 void MainWindow::times() {
     double first = lastResult,
         second = edit->text().toDouble();
-    lastResult = first * second;
-    textEdit->append(QString::number(first) + "*" + QString::number(second) + "=" + QString::number(lastResult));
+    if (lastResultIsExist) {
+        lastResult = first * second;
+        textEdit->append(QString::number(first) + "*" + QString::number(second) + "=" + QString::number(lastResult));
+    } else {
+        lastResult = second;
+        lastResultIsExist = true;
+    }
+    lLastResult->setText(QString::number(lastResult));
 }
 
 void MainWindow::divide() {
     double first = lastResult,
         second = edit->text().toDouble();
-    lastResult = first / second;
-    textEdit->append(QString::number(first) + "/" + QString::number(second) + "=" + QString::number(lastResult));
+    if (lastResultIsExist) {
+        if (second != 0) {
+            lastResult = first / second;
+            textEdit->append(QString::number(first) + "/" + QString::number(second) + "=" + QString::number(lastResult));
+        }
+    } else {
+        lastResult = second;
+        lastResultIsExist = true;
+    }
+    lLastResult->setText(QString::number(lastResult));
 }
 
 void MainWindow::sopen() {
@@ -128,6 +155,7 @@ void MainWindow::sopen() {
         if (file.open(QIODevice::ReadOnly)) {
             lFileName->setText("File name: " + fileName.section('/',-1));
             lastResult = QString(file.readLine()).toDouble();
+            lastResultIsExist = true;
             lLastResult->setText(QString::number(lastResult));
             edit->setText(QString::number(lastResult));
             textEdit->setText(QString(file.readAll()));
@@ -141,15 +169,16 @@ void MainWindow::sopen() {
 void MainWindow::ssave() {
     if(fileName.isEmpty()) {
         fileName = QFileDialog::getSaveFileName(this,"Save file");
-    } else {
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly)) {
-            QTextStream toFile(&file);
-            toFile << QString::number(lastResult) << "\n" << textEdit->toPlainText();
-            lFileName->setText("File Name: " + fileName.section('/',-1));
-            file.close();
-        }
+        lFileName->setText("FileName: " + fileName.section('/',-1));
     }
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        QTextStream toFile(&file);
+        toFile << QString::number(lastResult) << "\n" << textEdit->toPlainText();
+        lFileName->setText("File Name: " + fileName.section('/',-1));
+        file.close();
+    }
+
 }
 
 void MainWindow::srevert() {

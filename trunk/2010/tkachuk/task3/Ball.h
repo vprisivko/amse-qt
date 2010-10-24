@@ -2,7 +2,6 @@
 #define _BALL_H_
 
 #include <QWidget>
-#include <QTimerEvent>
 #include <QPaintEvent>
 #include <QPoint>
 #include <QSize>
@@ -12,13 +11,15 @@ class Ball : public QWidget {
 
 	public:
 		Ball(QWidget *parent = NULL);
-		virtual void timerEvent(QTimerEvent *);
 		virtual void paintEvent(QPaintEvent *);
+
+	private:
+		void computeParams();
 
 	private:
 		int myRadius;
 		QPoint myCoord;
-		QSize myShape;		
+		QSize myShape;
         int dx, dy;
 };
 

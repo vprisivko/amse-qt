@@ -135,7 +135,7 @@ void MainWindow::createDockCalculator()
 
 void MainWindow::plusPressed(){
 
-    int b = QString(myInput->text()).toInt();
+    double b = QString(myInput->text()).toDouble();
     QString newCalc = QString::number(myResult).append(" + ").append(QString::number(b)).append(" = ")
             .append(QString::number(myResult + b));
     myResult += b;
@@ -145,7 +145,7 @@ void MainWindow::plusPressed(){
 
 void MainWindow::minusPressed(){
 
-    int b = QString(myInput->text()).toInt();
+    double b = QString(myInput->text()).toDouble();
     QString newCalc = QString::number(myResult).append(" - ").append(QString::number(b)).append(" = ")
             .append(QString::number(myResult - b));
     myResult -= b;
@@ -155,7 +155,7 @@ void MainWindow::minusPressed(){
 
 void MainWindow::multPressed(){
 
-    int b = QString(myInput->text()).toInt();
+    double b = QString(myInput->text()).toDouble();
     QString newCalc = QString::number(myResult).append(" * ").append(QString::number(b)).append(" = ")
             .append(QString::number(myResult * b));
     myResult *= b;
@@ -165,7 +165,7 @@ void MainWindow::multPressed(){
 
 void MainWindow::dividePressed(){
 
-    int b = QString(myInput->text()).toInt();
+    double b = QString(myInput->text()).toDouble();
     QString newCalc = QString::number(myResult).append(" / ").append(QString::number(b)).append(" = ")
             .append(QString::number(myResult / b));
     myResult /= b;
@@ -191,9 +191,14 @@ void MainWindow::newFile(){
 
 
 void MainWindow::revert(){
-
-    loadFile(curFile);
-
+    if(!curFile.isEmpty()) {
+     loadFile(curFile);
+    }
+    else{
+        myTextEdit->setPlainText("");
+        myResult=0;
+        lastResult->setText(QString::number(myResult));
+    }
 }
 
 bool MainWindow::save(){

@@ -44,7 +44,7 @@ private:
      void loadFile(const QString &fileName);
      bool saveFile(const QString &fileName);
 
-     int myResult;
+     double myResult;
      QString curFile;
 
      QMenu *myMenu;

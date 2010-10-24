@@ -47,7 +47,7 @@ Calculator::~Calculator()
 
 }
 
-void Calculator::setResult(int res)
+void Calculator::setResult(qreal res)
 {
   myResult = res;
   emit resultChanged(myResult);
@@ -56,10 +56,11 @@ void Calculator::setResult(int res)
 void Calculator::setValue(const QString& value)
 {
   bool success;
-  int newValue = value.toInt(&success);
+  qreal newValue = value.toDouble(&success);
   if (!success)
   {
     myLineEdit->setText(QString::number(myValue));
+    return;
   }
   myValue = newValue;
 }
@@ -92,7 +93,7 @@ void Calculator::divide()
   setResult(myResult / myValue);
 }
 
-const int Calculator::result() const
+qreal Calculator::result() const
 {
   return myResult;
 }

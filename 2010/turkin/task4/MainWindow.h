@@ -23,14 +23,14 @@ class MainWindow : public QMainWindow {
         
     private: // UI elements
         CalcDialog* calcDialog;
-		QTextEdit* teLog;
-		QLabel *lblFilename;
-		QLabel *lblResult;
-		QString logHistory;
-		QString resultHistory;	
+        QTextEdit* teLog;
+        QLabel *lblFilename;
+        QLabel *lblResult;
+        QString logHistory;
+        QString resultHistory;
 		
 	private: //actions
-	    QAction* actOpenFile;
+        QAction* actOpenFile;
         QAction* actSaveFile;
         QAction* actRevertFile;
         QAction* actShowCalc;
@@ -48,11 +48,11 @@ class MainWindow : public QMainWindow {
     signals:
     
     public slots:
-		void slotOpenFile();
-		void slotSaveFile();
-		void slotRevertFile();
-		void slotShowCalc(bool checked);
-		void exprCalculated(QString str, int result);	
+        void slotOpenFile();
+        void slotSaveFile();
+        void slotRevertFile();
+        void slotShowCalc(bool checked);
+        void exprCalculated(double oper1, char operation, double oper2, double result);
 };
 
 

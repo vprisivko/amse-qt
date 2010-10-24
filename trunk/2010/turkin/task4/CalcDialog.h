@@ -14,39 +14,31 @@ class CalcDialog : public QDialog {
     
     public:
         CalcDialog(QWidget *parent = NULL);
-        void setResult(int);
+        void setResult(double);
     public:
         void hideEvent( QHideEvent* event );
-	private: 
-		void makeOperation( char op );	
+    private:
+        void makeOperation( char op );
     private: // UI elements
         QLineEdit* leDigits;
         QPushButton* btnPlus;
         QPushButton* btnMinus;
-		QPushButton* btnMultiply;
-		QPushButton* btnDivide;
-		QVBoxLayout* mainLayout;
-		
-	private: 
-	    void createDigits();
-	    void createButtons();
-        void createConnects();
-        
-    
-
+        QPushButton* btnMultiply;
+        QPushButton* btnDivide;		
     private:
-		int curResult;
-		char curOperation;
-    
-    
-	signals:
-    	void expr(QString string, int result);
+        void createDigits();
+        void createButtons();
+        void createConnects();
+    private:
+        double myResult;
+    signals:
+        void expr(double oper1, char operation, double oper2, double result);
     	void calcHide(bool);
     public slots:
-		void plus();
-		void minus();
-		void multiply();
-		void divide();
+        void plus();
+        void minus();
+        void multiply();
+        void divide();
 
 };
 

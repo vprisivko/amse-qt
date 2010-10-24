@@ -24,15 +24,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     calcDialog = new CalcDialog(this);
     
     createStatusBar();
-	createActions();
-	createMenu();
-	createToolBar();
+    createActions();
+    createMenu();
+    createToolBar();
     createCentralWidget();
     loadSettings();
     createConnects();
     
-   	logHistory = "";
-   	resultHistory = "0";
+    logHistory = "";
+    resultHistory = "0";
    	
 }
 
@@ -45,8 +45,8 @@ void MainWindow::createConnects() {
     connect( actSaveFile, SIGNAL(triggered()), this, SLOT(slotSaveFile()) );
     connect( actRevertFile, SIGNAL(triggered()), this, SLOT(slotRevertFile()) );
     connect( actShowCalc, SIGNAL(triggered(bool)), this, SLOT(slotShowCalc(bool)) );
-  	connect( calcDialog, SIGNAL(expr(QString, int)), this, SLOT(exprCalculated(QString, int)));
-  	connect( calcDialog, SIGNAL(calcHide(bool)), actShowCalc, SLOT(setChecked (bool)));
+    connect( calcDialog, SIGNAL(expr(double,char,double,double)), this, SLOT(exprCalculated(double,char,double,double)));
+    connect( calcDialog, SIGNAL(calcHide(bool)), actShowCalc, SLOT(setChecked (bool)));
   	
 }
 
@@ -67,28 +67,28 @@ void MainWindow::saveSettings() {
 
 void MainWindow::createActions() {
     actOpenFile = new QAction("&Open",this);
-	actSaveFile = new QAction("&Save",this);
-	actRevertFile = new QAction("&Revert",this);
-	actShowCalc = new QAction(QIcon(":/calc.svg"),"&Calculator",this);
-	actShowCalc->setCheckable(true);
+    actSaveFile = new QAction("&Save",this);
+    actRevertFile = new QAction("&Revert",this);
+    actShowCalc = new QAction(QIcon(":/calc.svg"),"&Calculator",this);
+    actShowCalc->setCheckable(true);
 }
 
 void MainWindow::createToolBar() {
     QToolBar* toolbar = new QToolBar("toolbar");
-	toolbar->addAction(actShowCalc);
-	addToolBar(toolbar);
+    toolbar->addAction(actShowCalc);
+    addToolBar(toolbar);
 }
 
 void MainWindow::createMenu() {
     QMenu* menuFile = new QMenu("&File");
-	QMenu* menuTools = new QMenu("&Tools");
-	
-	menuFile->addAction(actOpenFile);
-	menuFile->addAction(actSaveFile);
+    QMenu* menuTools = new QMenu("&Tools");
+
+    menuFile->addAction(actOpenFile);
+    menuFile->addAction(actSaveFile);
     menuFile->addAction(actRevertFile);
     menuTools->addAction(actShowCalc);
-	menuBar()->addMenu(menuFile);
-	menuBar()->addMenu(menuTools);
+    menuBar()->addMenu(menuFile);
+    menuBar()->addMenu(menuTools);
 }
 
 void MainWindow::createStatusBar() {
@@ -105,11 +105,11 @@ void MainWindow::createCentralWidget() {
 }
 
 void MainWindow::slotOpenFile() {
-	QString filename = QFileDialog::getOpenFileName(this);
-	QFile file(filename);
+    QString filename = QFileDialog::getOpenFileName(this);
+    QFile file(filename);
 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-         return;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
     }
     
     lblFilename->setText( file.fileName() );
@@ -121,10 +121,10 @@ void MainWindow::slotOpenFile() {
         QString line = stream.readLine();
         logHistory += line + "\n";
     }
-	file.close();
-	
-	teLog->setPlainText( logHistory );
-	calcDialog->setResult( resultHistory.toInt() );
+    file.close();
+
+    teLog->setPlainText( logHistory );
+    calcDialog->setResult( resultHistory.toDouble() );
 }
 
 void MainWindow::slotSaveFile() { 
@@ -150,16 +150,15 @@ void MainWindow::slotSaveFile() {
 void MainWindow::slotRevertFile() {
     teLog->setPlainText( logHistory );
     lblResult->setText( resultHistory );
-    if (lblFilename->text() != "") {
-        calcDialog->setResult( resultHistory.toInt() );
-    }
+    calcDialog->setResult( resultHistory.toInt() );
 }
 
 void MainWindow::slotShowCalc(bool checked) {
 	calcDialog->setVisible(checked);
 }
 
-void MainWindow::exprCalculated(QString expr, int result) {
+void MainWindow::exprCalculated(double operand1, char operation, double operand2, double result) {
+    QString expr = QString("%1 %2 %3 = %4").arg(operand1).arg(operation).arg(operand2).arg(result);
     teLog->setPlainText( teLog->toPlainText() + expr + "\n");
     lblResult->setText( QString::number(result) );
 }

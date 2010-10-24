@@ -7,6 +7,7 @@
 #include <QtCore/QPoint>
 #include <QtGui/QColor>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QResizeEvent>
 
 
 class BallWidget : public QWidget
@@ -21,6 +22,7 @@ protected:
 
   void keyPressEvent(QKeyEvent*);
   void paintEvent(QPaintEvent*);
+  void resizeEvent(QResizeEvent*);
 
 protected slots:
 

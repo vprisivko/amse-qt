@@ -6,7 +6,12 @@
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
-  BallWidget w(1300, 2, QColor(255, 0, 0), QColor(0, 255, 0));
+  int ballArea = 1200;
+  int updateIntervalInMs = 10;
+  QColor ballColor = QColor(255, 0, 0);
+  QColor backgroundColor = QColor(0, 0, 0);
+
+  BallWidget w(ballArea, updateIntervalInMs, ballColor, backgroundColor);
   w.show();
   return a.exec();
 }

@@ -5,7 +5,7 @@ LogWindow :: LogWindow( QWidget* parent ) : QMainWindow( parent ){
 	setWindowTitle( "Log Journal" );  	
 	fileName = "";
   	nameLabel = new QLabel( "File Name: " + fileName, this );
-  	resultLabel = new QLabel( "Last Result : " + QString::number( myCalcDialog->curResult ) );  	 
+  	resultLabel = new QLabel( "Last Result : " + QString::number( 0 ) );  	 
   	myCalcDialog = new Calculator( this );
   	
 	createActions(); 

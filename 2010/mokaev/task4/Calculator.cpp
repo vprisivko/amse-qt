@@ -1,6 +1,7 @@
 #include "Calculator.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QString>
 
 Calculator :: Calculator( QWidget* parent ) : QDialog( parent ){
@@ -60,6 +61,10 @@ void Calculator :: calcOperation( char operation ){
         		curResult *= newNumber;
 			break;
     		case '/':
+			if( newNumber == 0 ){
+				QMessageBox :: critical( this, "Invalid Input Value", "Error: Division by zero! Try new value!" );
+				return;
+			}
         		curResult /= newNumber;
 			break;
     		default: break;

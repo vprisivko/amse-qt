@@ -5,6 +5,7 @@
 #include<QEvent>
 #include<QPaintEvent>
 #include<QTimer>
+#include <QResizeEvent>
 
 class BallWidget : public QWidget{
 	Q_OBJECT;
@@ -16,13 +17,13 @@ public:
 private:
 	void paintEvent( QPaintEvent* );
 	void timerEvent( QTimerEvent* timerEvent );
+	void resizeEvent( QResizeEvent* resizeEvent );
 private:
 	int myX, myY;
 	int myVelocityX, myVelocityY;
 	int myRadius;
-	int myCurrRadiusX, myCurrRadiusY;
+	int myCompressedRadiusX, myCompressedRadiusY;
 	int myHeight, myWidth;
-	bool isKicked;
 	int myTimerId;
 
 };

@@ -201,9 +201,14 @@ void MainWindow::changeLastResult(char operation) {
 }
 
 void MainWindow::open() {
-    QString fileName = QFileDialog::getOpenFileName(this, "Open Log", "./", "Log File (*.log)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Log", "./", "Log File (*.log);;All Files (*)");
+    if (fileName == "") {
+        return;
+    }
     QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    } 
 
 
     QTextStream in(&file);
@@ -229,6 +234,9 @@ void MainWindow::open() {
 
 void MainWindow::save() {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Log", "./", "Log File (*.log)");
+    if (!fileName.endsWith(".log", Qt::CaseInsensitive)) {
+        fileName += ".log";
+    }
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
     QTextStream out(&file);

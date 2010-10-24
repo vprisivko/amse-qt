@@ -9,11 +9,13 @@
 
 #include <cmath>
 
-BallWidget::BallWidget(int ballArea, int updateInterval, const QColor& ballColor, const QColor& backColor, QWidget *parent, Qt::WFlags flags) : myBallArea(ballArea), myUpdateInterval(updateInterval), myBallColor(ballColor), myBackgroundColor(backColor)
+BallWidget::BallWidget(int ballArea, int updateInterval, const QColor& ballColor, const QColor& backColor, QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags),  myUpdateInterval(updateInterval), myBallArea(ballArea), myBallColor(ballColor), myBackgroundColor(backColor)
 {
   setWindowTitle("Press Space to change direction");
-  myBallPos = QPoint(width() / 2, height() / 2);
   myVerticalRadius = myHorizontalRadius = sqrt((qreal)ballArea);
+  //minimal area for ball to fit in
+  setMinimumSize(QSize(3 * myHorizontalRadius, 3 * myVerticalRadius));
+  myBallPos = QPoint(width() / 2, height() / 2);
   myBallVelocity.setX((qreal) (qrand() % 500));
   myBallVelocity.setY((qreal) (qrand() % 500));
   QTimer* timer = new QTimer(this);
@@ -107,4 +109,17 @@ void BallWidget::keyPressEvent(QKeyEvent* e)
     myBallVelocity.setX((qreal) (qrand() % 500));
     myBallVelocity.setY((qreal) (qrand() % 500));
   }
+}
+
+void BallWidget::resizeEvent(QResizeEvent*)
+{
+  if (myBallPos.x() + myHorizontalRadius > width())
+  {
+    myBallPos.rx() = width() - myHorizontalRadius;
+  }
+  if (myBallPos.y() + myVerticalRadius > height())
+  {
+    myBallPos.ry() = height() - myVerticalRadius;
+  }
+
 }

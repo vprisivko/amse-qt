@@ -14,7 +14,6 @@ SimpleUDPChat::SimpleUDPChat(QWidget *parent)
 
     constructObjects();
     connectObjects();
-
 }
 
 bool SimpleUDPChat::startUdpListener(int port) {
@@ -57,14 +56,14 @@ void SimpleUDPChat::constructObjects() {
 }
 
 void SimpleUDPChat::connectObjects() {
-    connect(sendButton,SIGNAL(clicked()),SLOT(sendMessage()));
-    connect(udpSocket,SIGNAL(readyRead()),SLOT(readMessage()));
+    connect(sendButton, SIGNAL(clicked()),  SLOT(sendMessage()));
+    connect(udpSocket,  SIGNAL(readyRead()),SLOT(readMessage()));
 }
 
 void SimpleUDPChat::sendMessage() {
     QString message = messageText->text();
     QString mcopy = message;
-    mcopy.replace(" ","");
+    mcopy.replace(" ", "");
     if (mcopy.length() == 0) {
         return;
     }
@@ -73,22 +72,26 @@ void SimpleUDPChat::sendMessage() {
 
     QHostAddress destination;
     if (!destination.setAddress(ipAddressText->text())) {
-        QMessageBox::warning(0,"Simple UDP Chat","Cannot send message. May be address is invalid");
+        QMessageBox::warning(0, "Simple UDP Chat","Cannot send message. May be address is invalid");
         return;
     }
 
     bool portGetting;
     quint16 destinationPort = portText->text().toInt(&portGetting);
     if (!portGetting || destinationPort == 0) {
-        QMessageBox::warning(0,"Simple UDP Chat","Cannot send message. May be port is invalid");
+        QMessageBox::warning(0, "Simple UDP Chat","Cannot send message. May be port is invalid");
         return;
     }
 
-    qint64 sended = udpSocket->writeDatagram(datagram,destination,destinationPort);
+    qint64 sended = udpSocket->writeDatagram(datagram, destination, destinationPort);
     if (sended == -1) {
-        QMessageBox::warning(0,"Simple UDP Chat","Cannot send message. Strange error occured");
+        QMessageBox::warning(0, "Simple UDP Chat","Cannot send message. Strange error occured");
         return;
     }
+    messagesList->addItem(tr("to ") + ipAddressText->text() + ":" +
+                          portText->text() + "|\t" + message);
+    messageText->clear();
+
 }
 
 void SimpleUDPChat::readMessage() {
@@ -102,8 +105,8 @@ void SimpleUDPChat::readMessage() {
                                     &senderPort) == -1)
             continue;
 
-        QString toAdd = sender.toString() + ":" + QString::number(senderPort)
-                        + ">> " + QString(datagram);
+        QString toAdd = "from " + sender.toString() + ":" +
+                        QString::number(senderPort) + "|\t" + QString(datagram);
         messagesList->addItem(toAdd);
     }
 }

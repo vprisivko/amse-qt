@@ -9,6 +9,8 @@ BallDialog::BallDialog(QWidget *parent, int x, int y, int dx, int dy, int rx, in
 	myInitialXRadius = myXRadius = rx;
 	myInitialYRadius = myYRadius = ry;
 	startTimer(time);
+	setMinimumWidth(200);
+	setMinimumHeight(200);
 }
 
 void BallDialog::timerEvent(QTimerEvent *) {
@@ -34,4 +36,19 @@ void BallDialog::paintEvent(QPaintEvent *) {
 	QPainter p(this);
 	p.setBrush(Qt::green);
 	p.drawEllipse(QPoint(myXCoord, myYCoord), myXRadius, myYRadius);
+}
+
+void BallDialog::resizeEvent(QResizeEvent *) {
+	if (myXCoord < myXRadius) {
+		myXCoord = myXRadius;
+	}
+	if (myYCoord < myYRadius) {
+		myYCoord = myYRadius;
+	}
+	if (myXCoord > width() - myXRadius) {
+		myXCoord = width() - myXRadius;
+	}
+	if (myYCoord > height() - myYRadius) {
+		myYCoord = height() - myYRadius;
+	}
 }

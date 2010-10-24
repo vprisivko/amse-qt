@@ -10,8 +10,9 @@ class BallDialog : public QDialog {
 public:
 	BallDialog(QWidget *parent, int x, int y, int dx, int dy, int rx, int ry, int time);
 
-	void paintEvent(QPaintEvent *event);
-	void timerEvent(QTimerEvent *event);
+	void paintEvent(QPaintEvent *);
+	void timerEvent(QTimerEvent *);
+	void resizeEvent(QResizeEvent *);
 	
 private:
 	int myXCoord, myYCoord;

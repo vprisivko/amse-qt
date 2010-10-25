@@ -12,7 +12,7 @@ ChatDialog::ChatDialog(int port, QWidget *parent): QDialog(parent), myPort(port)
 
 	myMessagesList = new QListWidget(this);
 	myIpLbl = new QLabel("IP: ", this);
-	myIpEdt = new QLineEdit(this);
+	myIpEdt = new QLineEdit("127.0.0.1", this);
 	myPortLbl = new QLabel("Port: ", this);
 	myPortEdt = new QLineEdit(this);
 	mySendTextEdt = new QLineEdit(this);
@@ -45,9 +45,14 @@ ChatDialog::ChatDialog(int port, QWidget *parent): QDialog(parent), myPort(port)
 }
 
 void ChatDialog::send() {
-	QByteArray datagram(mySendTextEdt->text().toUtf8().data());
-	mySocket->writeDatagram(datagram.data(), QHostAddress(myIpEdt->text()), myPortEdt->text().toUInt());
-	myMessagesList->addItem("I wrote: " + mySendTextEdt->text());
+	if (!myIpEdt->text().isEmpty() && !myPortEdt->text().isEmpty()) {
+		QByteArray datagram(mySendTextEdt->text().toUtf8().data());
+		mySocket->writeDatagram(datagram.data(), QHostAddress(myIpEdt->text()), myPortEdt->text().toUInt());
+		myMessagesList->addItem("I wrote: " + mySendTextEdt->text());
+	} else {
+		myMessagesList->addItem("You must enter both: your ip and listener's port!");
+	}
+
 	mySendTextEdt->setText("");
 }
 

@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow {
 private:
     QString fileName;
     double lastResult;
+    bool lastResultIsExist;
 
     QMenuBar *myMenu;
     QMenu *fileMenu;

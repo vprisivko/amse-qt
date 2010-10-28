@@ -1,7 +1,9 @@
 #include <QPainter>
 #include <QColor>
 #include <Qt>
+#include <QRect>
 #include <QPointF>
+#include <algorithm>
 
 #include "BouncedBall.h"
 
@@ -17,7 +19,9 @@ Ball::Ball(QWidget *parent,
 
 	myTimer_id = startTimer(3);
 	this->setWindowTitle("Bounced Ball by Vasiliev");
-	
+
+	this->setMinimumHeight(radius*5);
+	this->setMinimumWidth(radius*5);
 }
 
 void Ball::setRadius(const int &radius) {
@@ -37,6 +41,13 @@ void Ball::timerEvent(QTimerEvent *e) {
 
 		myHeight = this->height();
 		myWidth = this->width();
+
+		if (myY > myHeight) {
+			myY = myHeight;
+		}
+		if (myX > myWidth) {
+			myX = myWidth;
+		}
 		if ((myHeight - myY < myRadiusY) ||
 		    (myY < myRadiusY) ||
 		    (myWidth - myX < myRadiusX) ||
@@ -49,7 +60,7 @@ void Ball::timerEvent(QTimerEvent *e) {
 		myX += myDirectionX;
 		myY += myDirectionY;
 		if (isSticked) {
-			if ((myHeight - myY < myRadiusY) || (myY < myRadiusY)) {
+			if ((myHeight - myY < myRadiusY) || (myY < myRadiusY / 2)) {
 				if (myHeight - myY < myRadiusY) myCurrRadiusY -= myDirectionY;
 				else myCurrRadiusY += myDirectionY;
 				if (myCurrRadiusY < myRadiusY / 2) {
@@ -59,7 +70,7 @@ void Ball::timerEvent(QTimerEvent *e) {
 					isSticked = false;
 				}
 			}
-			if ((myWidth - myX < myRadiusX) || (myX < myRadiusX)) {
+			if ((myWidth - myX < myRadiusX) || (myX < myRadiusX / 2)) {
 				if (myWidth - myX < myRadiusX) myCurrRadiusX -= myDirectionX;
 				else myCurrRadiusX += myDirectionX;
 				if (myCurrRadiusX < myRadiusX / 2) {

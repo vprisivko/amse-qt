@@ -78,6 +78,9 @@ void CalcLog::saveFile() {
 		fileName = QFileDialog::getSaveFileName(this, tr("Open File"),
 							".",
 							tr("Calculation files (*.cf)"));
+		if (!fileName.endsWith(".cf")) {
+			fileName += ".cf";
+		}
 	} else {
 		fileName = myFileNameLabel->text();
 	}

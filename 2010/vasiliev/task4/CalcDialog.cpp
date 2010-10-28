@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QIntValidator>
 
 #include "CalcDialog.h"
 
@@ -13,7 +14,10 @@ CalcDialog::CalcDialog(QWidget *parent): QDialog(parent),
 	myMinusBtn = new QPushButton("-",this);
 	myMultiplyBtn = new QPushButton("*", this);
 	myDivisionBtn = new QPushButton("/", this);
+
 	myExpressionEdit = new QLineEdit(this);
+	QIntValidator *inputValidator = new QIntValidator(this);
+	myExpressionEdit->setValidator(inputValidator);
 
 	QHBoxLayout *btnLay = new QHBoxLayout();
 
@@ -59,6 +63,7 @@ void CalcDialog::div() {
 void CalcDialog::doArythmethic(const char &operation) {
 	int leftSide = myResult;
 	int rightSide = myExpressionEdit->text().toInt();
+	bool wasDivisionByZero = false;
 	switch(operation) {
 	case '+': {
 			myResult+=rightSide;
@@ -73,14 +78,22 @@ void CalcDialog::doArythmethic(const char &operation) {
 			break;
 		}
 	case '/': {
+			if (rightSide == 0) {
+				wasDivisionByZero = true;
+				break;
+			}
 			myResult/=rightSide;
 			break;
 		}
 	}
 
-	emit sendExpression(QString::number(leftSide) + " " + operation +
+	if (wasDivisionByZero) {
+		emit sendExpression("Was division by zero! Try to input another data!", myResult);
+	} else {
+		emit sendExpression(QString::number(leftSide) + " " + operation +
 				" " + QString::number(rightSide) + " = " +
 				QString::number(myResult), myResult);
+	}
 	myExpressionEdit->setText("");
 }
 

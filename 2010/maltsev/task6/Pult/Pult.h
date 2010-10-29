@@ -27,14 +27,20 @@ private:
     void setNetworkData();
     void connectButtons();
 
+    struct TableState {
+        static TableState* createInstance(const QByteArray&);
+        bool gameOver, started;
+        int ballX, ballY, tableX, tableHW, height, width;
+
+    };
+
     class PultXmlHandler: public QXmlDefaultHandler {
     public:
-        PultXmlHandler(Pult* pult):my_pult(pult){}
+        PultXmlHandler(TableState* ts):my_ts(ts){}
         bool startElement(const QString &, const QString &, const QString &, const QXmlAttributes &);
     private:
-        Pult* my_pult;
-        int width, racket_hw;
-        bool gameover;
+        TableState* my_ts;
+
     };
 
     void processTheDatagram(QByteArray datagram);

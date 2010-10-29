@@ -142,11 +142,12 @@ void Table::readPendingDatagrams() {
         my_udpSocket->readDatagram(datagram.data(), datagram.size(),
                                 &sender, &senderPort);
         if (!pultConnected) {
-            pultConnected = true;
-            my_ipTo = sender;
-            my_portTo = senderPort;
+            my_ipTemp = sender;
+            my_portTemp = senderPort;
         }
-        processTheDatagram(datagram);
+        if (my_ipTemp == sender && my_portTemp == senderPort) {
+            processTheDatagram(datagram);
+        }
 
     }
 }
@@ -180,6 +181,14 @@ void Table::sendState() {
 }
 
 bool Table::TableXmlHandler::startElement(const QString &, const QString &, const QString & qName, const QXmlAttributes & atts) {
+    if (!my_table->pultConnected) {
+        if (qName == "set") {
+            my_table->pultConnected = true;
+            my_table->my_ipTo =  my_table->my_ipTemp;
+            my_table->my_portTo =  my_table->my_portTemp;
+        }
+        return true;
+    }
     if (qName == "command") {
         if (atts.value("name") == "start" && !my_table->started) {
             my_table->started = true;

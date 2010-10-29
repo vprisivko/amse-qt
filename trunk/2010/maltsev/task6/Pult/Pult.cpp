@@ -132,49 +132,55 @@ void Pult::readPendingDatagrams() {
 
 bool Pult::PultXmlHandler::startElement(const QString &, const QString &, const QString & qName, const QXmlAttributes & atts) {
     if (qName == "state") {
-        if (atts.value("gameover") != "0") {
-            gameover = true;
-            my_pult->my_startButton->setEnabled(false);
-            my_pult->my_rightButton->setEnabled(false);
-            my_pult->my_leftButton->setEnabled(false);
-            my_pult->my_setButton->setEnabled(true);
-            return true;
-        } else {
-            my_pult->my_setButton->setEnabled(false);
-            my_pult->my_rightButton->setEnabled(true);
-            my_pult->my_leftButton->setEnabled(true);
-            gameover = false;
-            if (atts.value("started") != "0") {
-                my_pult->my_startButton->setEnabled(false);
-            } else {
-                my_pult->my_startButton->setEnabled(true);
-            }
-            width = atts.value("width").toInt();
-            return true;
-        }
-
+        my_ts->gameOver = atts.value("gameover").toInt();
+        my_ts->started = atts.value("started").toInt();
+        my_ts->height = atts.value("height").toInt();
+        my_ts->width = atts.value("width").toInt();
     }
-    if (qName == "racket" && !gameover) {
-        racket_hw = atts.value("halfwidth").toInt();
-        int x = atts.value("x").toInt();
-        if (x > racket_hw) {
-            my_pult->my_leftButton->setEnabled(true);
-        } else {
-            my_pult->my_leftButton->setEnabled(false);
-        }
-        if (x < width - racket_hw) {
-            my_pult->my_rightButton->setEnabled(true);
-        } else {
-            my_pult->my_rightButton->setEnabled(false);
-        }
+    if (qName == "racket") {
+        my_ts->tableHW = atts.value("halfwidth").toInt();
+        my_ts->tableX = atts.value("x").toInt();
+    }
+    if (qName == "ball") {
+        my_ts->ballX = atts.value("x").toInt();
+        my_ts->ballY = atts.value("y").toInt();
     }
     return true;
 }
 
 void Pult::processTheDatagram(QByteArray datagram) {
+    Pult::TableState* TS = Pult::TableState::createInstance(datagram);
+    if (TS->gameOver) {
+        my_startButton->setEnabled(false);
+        my_rightButton->setEnabled(false);
+        my_leftButton->setEnabled(false);
+        my_setButton->setEnabled(true);
+    } else {
+       my_setButton->setEnabled(false);
+        if (TS->started) {
+            my_startButton->setEnabled(false);
+        } else {
+            my_startButton->setEnabled(true);
+        }
+        if (TS->tableX > TS->tableHW) {
+            my_leftButton->setEnabled(true);
+        } else {
+            my_leftButton->setEnabled(false);
+        }
+        if (TS->tableX < TS->width - TS->tableHW) {
+            my_rightButton->setEnabled(true);
+        } else {
+            my_rightButton->setEnabled(false);
+        }
+    }
+}
+
+Pult::TableState* Pult::TableState::createInstance(const QByteArray& s) {
+    Pult::TableState* TS = new Pult::TableState();
     QXmlSimpleReader reader;
-    reader.setContentHandler(new Pult::PultXmlHandler(this));
+    reader.setContentHandler(new Pult::PultXmlHandler(TS));
     QXmlInputSource buf;
-    buf.setData(datagram);
+    buf.setData(s);
     reader.parse(&buf);
+    return TS;
 }

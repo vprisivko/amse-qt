@@ -54,8 +54,8 @@ private:
 
     int my_ballTimerID, my_stateTimerID, my_ballsNumber;
     QUdpSocket *my_udpSocket;
-    QHostAddress my_ip, my_ipTo;
-    qint16 my_port, my_portTo;
+    QHostAddress my_ip, my_ipTo, my_ipTemp;
+    qint16 my_port, my_portTo, my_portTemp;
     bool started;
     bool pultConnected;
     bool gameOver;

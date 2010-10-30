@@ -179,9 +179,11 @@ void Pult::processTheDatagram(QByteArray datagram) {
 Pult::TableState* Pult::TableState::createInstance(const QByteArray& s) {
     Pult::TableState* TS = new Pult::TableState();
     QXmlSimpleReader reader;
-    reader.setContentHandler(new Pult::PultXmlHandler(TS));
+    Pult::PultXmlHandler* CH = new Pult::PultXmlHandler(TS);
+    reader.setContentHandler(CH);
     QXmlInputSource buf;
     buf.setData(s);
     reader.parse(&buf);
+    delete CH;
     return TS;
 }

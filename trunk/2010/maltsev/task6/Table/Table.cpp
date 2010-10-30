@@ -154,11 +154,12 @@ void Table::readPendingDatagrams() {
 
 void Table::processTheDatagram(QByteArray datagram) {
     QXmlSimpleReader reader;
-    reader.setContentHandler(new Table::TableXmlHandler(this));
+    Table::TableXmlHandler* CH = new Table::TableXmlHandler(this);
+    reader.setContentHandler(CH);
     QXmlInputSource buf;
     buf.setData(datagram);
     reader.parse(&buf);
-
+    delete CH;
 }
 
 QDomDocument Table::serialize() {

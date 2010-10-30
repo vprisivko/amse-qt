@@ -173,6 +173,7 @@ void Pult::processTheDatagram(QByteArray datagram) {
             my_rightButton->setEnabled(false);
         }
     }
+    delete TS;
 }
 
 Pult::TableState* Pult::TableState::createInstance(const QByteArray& s) {

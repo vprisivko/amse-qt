@@ -1,0 +1,17 @@
+=== Arkanoid ===
+Contributors: Alex A. Renoire
+
+Arkanoid game application with remote control on the network based on UDP communication.
+
+== Description ==
+
+You can both play on localhost using hotkeys ">" (move right) and "<" (move left) as well as use remote control.
+
+== Installation ==
+
+First you must specify your ip and port in the ipconfig file in each subapplication folder.
+
+Than in the main application folder
+
+sudo qmake -makefile
+sudo make

@@ -7,16 +7,9 @@ Rocket::Rocket(int w, int h, int x){
 }
 QDomElement Rocket::serialize(Rocket *r, QDomDocument *doc){
     QDomElement rocket = doc->createElement("Rocket");
+    rocket.setAttribute("xPositon",r->xPosition);
+    rocket.setAttribute("widthRock",r->widthRock);
      doc->appendChild(rocket);
-     QDomElement pos = doc->createElement("position");
-     pos.setAttribute("xPositon",r->xPosition);
-     rocket.appendChild(pos);
-     QDomElement width = doc->createElement("width");
-     width.setAttribute("widthRock",r->widthRock);
-     rocket.appendChild(width);
-     QDomElement height = doc->createElement("height");
-     height.setAttribute("heightRock",r->heightRock);
-     rocket.appendChild(height);
     return rocket;
 
 }

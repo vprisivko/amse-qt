@@ -38,7 +38,10 @@ void Chat::createWidgets() {
     mainLayout->addItem(msgLayout);
 
     myUdpSocket = new QUdpSocket(this);
-    myUdpSocket->bind(myPort);
+    if (!myUdpSocket->bind(myPort)) {
+        printf("Cannot bind. Try another port.\n");
+        exit(1);
+    }
 
     setLayout(mainLayout);
 }

@@ -7,14 +7,9 @@ State::State(){
 }
 QDomElement State::serialize(State *st, QDomDocument *doc){
     QDomElement stateEl = doc->createElement("State");
-     doc->appendChild(stateEl);
-     QDomElement livLeft = doc->createElement("Lives");
-     livLeft.setAttribute("livesleft",st->livesleft);
-     stateEl.appendChild(livLeft);
-     QDomElement w = doc->createElement("widthDialog");
-     w.setAttribute("widthDialog",st->widthDialog);
-     stateEl.appendChild(w);
-     QDomElement rocket = st->r->serialize(st->r,doc);
-     stateEl.appendChild(rocket);
+    stateEl.setAttribute("livesleft",st->livesleft);
+    stateEl.setAttribute("width",st->widthDialog);
+    stateEl.appendChild( Rocket::serialize(st->r,doc));
+    doc->appendChild(stateEl);
     return stateEl;
 }

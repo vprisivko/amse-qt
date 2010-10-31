@@ -8,12 +8,14 @@ int main(int argc, char *argv[])
    QFile fin("ip_port.txt");
    if (!fin.open(QIODevice::ReadOnly | QIODevice::Text))
         return -1;
-   QHostAddress ip;
-   qint16 port;
-   ip.setAddress(QString(fin.readLine()));
-   port = QString(fin.readLine()).toInt();
+   QHostAddress destip;
+   qint16 destport;
+   qint16 myport;
+   destip.setAddress(QString(fin.readLine()));
+   destport = QString(fin.readLine()).toInt();
+   myport = QString(fin.readLine()).toInt();
    fin.close();
-   BallDial w(ip,port);
+   BallDial w(destip,destport,myport);
    w.show();
    return a.exec();
 

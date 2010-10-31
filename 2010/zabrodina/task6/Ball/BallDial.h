@@ -11,24 +11,41 @@
 #include<QtNetwork/QUdpSocket>
 #include<QtNetwork/QHostAddress>
 #include<QByteArray>
+#include<QLabel>
+#include<QXmlContentHandler>
+#include<QXmlDefaultHandler>
 #include"State.h"
+class MyXmlHandler;
 class BallDial : public QDialog
 {
     Q_OBJECT;
 
 public:
     State *state;
+    QLabel *lives;
     QPainter *p;
     QTimer *bTimer;
     QUdpSocket *socket;
-    QHostAddress ip;
-    qint16 port;
-    BallDial(QHostAddress _ip, qint16 _port);
+    QHostAddress destip;
+    qint16 destport;
+    qint16 myport;
+    MyXmlHandler *xmlH;
+    BallDial(QHostAddress _destip, qint16 _destport, qint16 _myport);
     void paintEvent( QPaintEvent *);
+    void sendMessage();
 public slots:
     void timeEvent();
     void readMessage();
-    void sendMessage();
+
+};
+class MyXmlHandler : public QXmlDefaultHandler{
+public:
+    BallDial *bDial;
+    MyXmlHandler(BallDial *dial);
+    bool startElement ( const QString & namespaceURI,
+                                const QString & localName,
+                                const QString & qName,
+                                const QXmlAttributes & atts );
 };
 
 #endif // BALLDIAL_H

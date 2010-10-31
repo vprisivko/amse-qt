@@ -1,0 +1,16 @@
+BUILD:
+Just type 
+
+    qmake && make 
+
+in this directory.
+RUN:
+1. Run server
+    
+    ./serverapp
+
+2. Run client
+
+    ./clientapp <ip address> <port>
+
+Where <ip address> is the computer IP address on which server runing, <port> port on title of the server.

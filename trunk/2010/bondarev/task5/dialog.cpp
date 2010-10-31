@@ -22,7 +22,7 @@ void Dialog::createMainWindow() {
 
     QHBoxLayout *hLay2 = new QHBoxLayout();
     lineMessage = new QLineEdit(this);
-    bnSend = new QPushButton(this);
+    bnSend = new QPushButton("Send", this);
     hLay2->addWidget(lineMessage);
     hLay2->addWidget(bnSend);
 

@@ -1,0 +1,9 @@
+To execute this application:
+
+1) arkanoid <port>
+2) control <port>
+
+At Linux, example:
+	./arkanoid 5555 &
+	./control  6666 &
+

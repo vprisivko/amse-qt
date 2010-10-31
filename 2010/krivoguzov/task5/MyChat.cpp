@@ -6,7 +6,7 @@
 
 MyChat::MyChat(int port){
 
-    listenPortNumber = port;
+    portNumber = port;
 
     createDialog();
     showExplanation();
@@ -21,8 +21,7 @@ void MyChat::createDialog(){
     portEdit = new QLineEdit();
     msgEdit = new QLineEdit();
     sendButton = new QPushButton("Send");
-    udpListener = new QUdpSocket(this);
-    udpSender = new QUdpSocket(this);
+    myUdpSocket = new QUdpSocket(this);
 
     msgList->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -42,7 +41,7 @@ void MyChat::createDialog(){
 
     setLayout(mainLay);
 
-    setWindowTitle("We are on port " + QString::number(listenPortNumber));
+    setWindowTitle("We are on port " + QString::number(portNumber));
     ipEdit->setText("127.0.0.1");
 
     resize(500,300);
@@ -51,45 +50,50 @@ void MyChat::createDialog(){
 void MyChat::showExplanation(){
 
     msgList->addItem("By default we listen 127.0.0.1");
-    msgList->addItem(QString("on port ").append(QString::number(listenPortNumber)));
+    msgList->addItem(QString("on port ").append(QString::number(portNumber)));
     msgList->addItem("Please specify the ip and port for sending messages");
 
 }
 
 void MyChat::configureNetwork(){
 
-    udpListener->bind(QHostAddress::LocalHost,listenPortNumber);
+    myUdpSocket->bind(QHostAddress::LocalHost,portNumber);
     connect(sendButton,SIGNAL(clicked()),this,SLOT(sendPressed()));
-    connect(udpListener, SIGNAL(readyRead()),this, SLOT(newMessageArrived()));
+    connect(myUdpSocket, SIGNAL(readyRead()),this, SLOT(newMessageArrived()));
 
 }
 
 void MyChat::sendPressed(){
 
     if(ipEdit->text().isEmpty() || portEdit->text().isEmpty()){
-        msgList->addItem("Message wasn't sent!\nPlease specify destination IP and Port!");
-    }
 
-    else{
+        msgList->addItem("Message wasn't sent!\nPlease specify destination IP and Port!");
+
+    } else if (msgEdit->text() == ""){
+
+        msgList->addItem("We don't send empty messages! Write something!");
+
+    } else{
+
         QByteArray datagram = msgEdit->text().toUtf8();
-        udpSender->writeDatagram(datagram.data(), datagram.size(),QHostAddress(ipEdit->text()), portEdit->text().toInt());
+        myUdpSocket->writeDatagram(datagram, QHostAddress(ipEdit->text()), portEdit->text().toInt());
         msgList->addItem(QString(">> We sended: ").append(msgEdit->text()));
-        msgList->scrollToBottom();
-        msgEdit->setText("");
+        msgEdit->clear();
     }
+    msgList->scrollToBottom();
 }
 
   void MyChat::newMessageArrived(){
 
-      while (udpListener->hasPendingDatagrams()) {
+      while (myUdpSocket->hasPendingDatagrams()) {
 
           QByteArray datagram;
-          datagram.resize(udpListener->pendingDatagramSize());
-          udpListener->readDatagram(datagram.data(), datagram.size());
+          datagram.resize(myUdpSocket->pendingDatagramSize());
+          myUdpSocket->readDatagram(datagram.data(), datagram.size());
           msgList->addItem(QString("<< We recieved: ").append(datagram.data()));
           msgList->scrollToBottom();
 
-         }
+      }
   }
 
 

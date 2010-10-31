@@ -25,14 +25,13 @@ private:
     void configureNetwork();
 
 private:
-    int listenPortNumber;
+    int portNumber;
     QListWidget* msgList;
     QPushButton* sendButton;
     QLineEdit* msgEdit;
     QLineEdit* ipEdit;
     QLineEdit* portEdit;
-    QUdpSocket* udpListener;
-    QUdpSocket* udpSender;
+    QUdpSocket* myUdpSocket;
 };
 
 #endif // MYCHAT_H

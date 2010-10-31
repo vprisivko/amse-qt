@@ -134,17 +134,11 @@ void BallWidget::left(){
     if(myPlatformX > 0){
         myPlatformX -=myBallStep*10;
     }
-    else {
-        myPlatformX = 0;
-    }
 
 }
 
 void BallWidget::right(){
     if(myPlatformX+myPlatformWidth < this->size().width()){
         myPlatformX +=myBallStep*10;
-    }
-    else {
-        myPlatformX = this->size().width() - myPlatformWidth;
     }
 }

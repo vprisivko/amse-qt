@@ -15,11 +15,16 @@
 // =====================================================================================
 
 #include <QApplication>
-#include <QWidget>
+#include <QString>
+
+#include "widget.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QWidget w;
+    if (argc < 3) {
+        return 1;
+    }
+    Widget w(QString("%1").arg(argv[1]), QString("%1").arg(argv[2]));
     w.show();
     return app.exec();
 }

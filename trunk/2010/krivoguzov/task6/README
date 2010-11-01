@@ -1,0 +1,9 @@
+To launch applictaions:
+
+./Arcanoid <destinationIP> <destinationPort> <portToListen>
+./MyControl <destinationIP> <destinationPort> <portToListen>
+
+Example:
+
+./Arcanoid 192.168.0.2 48888 47777
+./MyControl 192.168.0.1 47777 48888

@@ -164,6 +164,7 @@ void ControlDialog::processState(const ControlDialog::State& state) {
        myLeftButton->setEnabled(false);
        myRightButton->setEnabled(false);
     } else {
+	    myStartButton->setEnabled(false);
         if (state.padX + state.padWidth < state.windowWidth) {
             myRightButton->setEnabled(  true );
         } else {

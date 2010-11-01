@@ -25,6 +25,7 @@ static const int MAX_BALL_Y_SPEED = 2;
 
 ArkanoidDialog::ArkanoidDialog(quint16 port, QWidget *parent): QDialog(parent),  DEFAULT_RADIUS(20) {
     setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    setWindowTitle("Arkanoid");
     initSocket(port);
     setTimers();
     createConnects();
@@ -43,7 +44,9 @@ void ArkanoidDialog::setTimers() {
 void ArkanoidDialog::initSocket(quint16 port) {
     mySocket = new QUdpSocket(this);
     bool result = mySocket->bind(port);
-    if (result == false) {
+    if (result == true) {
+    	setWindowTitle( windowTitle() + " at port " + QString::number(port) );
+    } else {
         QMessageBox::critical(this, "Error", "Can't use this port!\nPlease, choose another one");
         throw std::exception();
     }
@@ -227,9 +230,9 @@ void ArkanoidDialog::processCommand(const ControlCommand& command) {
         myPad.dx = 0;
     }
     if (command.command == "start") {
-        myGameStarted = true;
-        makeStartPosition();
-        startMoveBall();
+		    myGameStarted = true;
+		    makeStartPosition();
+		    startMoveBall();
     }
 
 }

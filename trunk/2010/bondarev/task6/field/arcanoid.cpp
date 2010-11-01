@@ -98,6 +98,11 @@ void Arcanoid::Ball::move(Arcanoid::Racket* racket, Arcanoid* state) {
             dx = qrand() % 10 + 1;
         } else {
             state->gameOver = true;
+            state->ball->dx = 0;
+            state->ball->dy = 0;
+            state->racket->x = 320;
+            state->racket->dx = 0;
+            state->killTimer(state->timerId);
         }
         state->sendState();
     } else if (y <= 0) {
@@ -142,9 +147,10 @@ void Arcanoid::paintEvent(QPaintEvent *) {
 bool Arcanoid::FieldXmlHandler::startElement(const QString&, const QString&, const QString &name, const QXmlAttributes &attrs) {
     if (name == "command") {
         if (attrs.value("value") == "start") {
+            myField->countBallForGame = 3;
             myField->gameOver = false;
             myField->ball->x = 320;
-            myField->startTimer(25);
+            myField->timerId = myField->startTimer(25);
             myField->ball->y = 240;
             myField->ball->dx = qrand() % 6 + 1;
         } else if (attrs.value("value") == "left") {
@@ -186,4 +192,3 @@ QDomElement Arcanoid::Racket::serialize(QDomDocument &doc) {
     racket.setAttribute("x", x);
     return racket;
 }
-

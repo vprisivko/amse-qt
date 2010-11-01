@@ -1,0 +1,5 @@
+Arcanoid is binded on 5000 port.
+Controller is binded on 6000 port.
+
+To use application input ip address and port of another part of application.
+

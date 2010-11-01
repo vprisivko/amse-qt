@@ -86,7 +86,7 @@ Pult::State* Pult::State::createInstance(const QByteArray &str) {
 
 bool Pult::PultXmlHandler::startElement(const QString&, const QString&, const QString &name, const QXmlAttributes &attrs) {
     if (name == "field") {
-        state->gameOver = attrs.value("gameover") == "true";
+        state->gameOver = attrs.value("gameover") == "1";
         state->fieldWidth = attrs.value("width").toInt();
     } else if (name == "ball") {
         state->ballX = attrs.value("x").toInt();
@@ -102,6 +102,7 @@ bool Pult::PultXmlHandler::startElement(const QString&, const QString&, const QS
 void Pult::parseDatagramm(QByteArray &str) {
     Pult::State *state = Pult::State::createInstance(str);
     if (state->gameOver) {
+        qDebug() << "gameOver";
         bnStart->setEnabled(true);
         bnLeft->setEnabled(false);
         bnRight->setEnabled(false);

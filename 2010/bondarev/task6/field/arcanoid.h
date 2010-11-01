@@ -49,6 +49,8 @@ private:
     Racket *racket;
     Ball *ball;
 
+    int timerId;
+
     QHostAddress myHost;
     qint16 myPort;
     QHostAddress toHost;

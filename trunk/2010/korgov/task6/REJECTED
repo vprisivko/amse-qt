@@ -1,0 +1,7 @@
+Build warnings are errors
+
+ArconidControl.cpp: In member function ‘void ArconidControl::reciveStatus()’:
+ArconidControl.cpp:97: warning: ‘platformX’ may be used uninitialized in this function
+ArconidControl.cpp:98: warning: ‘platformWidth’ may be used uninitialized in this function
+ArconidControl.cpp:99: warning: ‘lives’ may be used uninitialized in this function
+ArconidControl.cpp:100: warning: ‘isPlaying’ may be used uninitialized in this function

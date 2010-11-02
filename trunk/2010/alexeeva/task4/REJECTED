@@ -1,2 +1,15 @@
-При выполнении операцй 1 +, /, / падает с 
-Floating point exception
+kkv@debian:/ws/amse-qt/2010/alexeeva/task4$ make distclean
+rm -f moc_calcdockwgt.cpp moc_calculator.cpp
+rm -f calcdockwgt.o calculator.o main.o moc_calcdockwgt.o moc_calculator.o
+rm -f *~ core *.core
+rm -f task4 
+rm -f Makefile
+kkv@debian:/ws/amse-qt/2010/alexeeva/task4$ qmake
+kkv@debian:/ws/amse-qt/2010/alexeeva/task4$ make
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. -o calcdockwgt.o calcdockwgt.cpp
+calcdockwgt.cpp: In member function ‘void CalcDockWgt::createItems()’:
+calcdockwgt.cpp:13: error: no matching function for call to ‘QDoubleValidator::QDoubleValidator()’
+/usr/include/qt4/QtGui/qvalidator.h:172: note: candidates are: QDoubleValidator::QDoubleValidator(const QDoubleValidator&)
+/usr/include/qt4/QtGui/qvalidator.h:143: note:                 QDoubleValidator::QDoubleValidator(double, double, int, QObject*)
+/usr/include/qt4/QtGui/qvalidator.h:142: note:                 QDoubleValidator::QDoubleValidator(QObject*)
+make: *** [calcdockwgt.o] Error 1

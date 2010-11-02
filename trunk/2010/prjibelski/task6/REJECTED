@@ -1,0 +1,5 @@
+To build application by commands
+  qmake
+  make
+
+  you have to use "subdirs" template in .pro file 

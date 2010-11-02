@@ -1,0 +1,25 @@
+kkv@debian:/ws/amse-qt/2010/rassokhin/task6/server_src$ qmake && make
+WARNING: Failure to find: ball.cpp
+WARNING: Failure to find: explodable.cpp
+WARNING: Failure to find: block.cpp
+WARNING: Failure to find: board.cpp
+WARNING: Failure to find: ball.h
+WARNING: Failure to find: explodable.h
+WARNING: Failure to find: block.h
+WARNING: Failure to find: board.h
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtNetwork -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtXml -I/usr/include/qt4 -I. -o main.o main.cpp
+In file included from servermainwindow.h:15,
+                  from main.cpp:4:
+                 arcanoidengine.h:27:18: error: ball.h: No such file or directory
+                 arcanoidengine.h:28:19: error: block.h: No such file or directory
+                 arcanoidengine.h:29:19: error: board.h: No such file or directory
+                 In file included from servermainwindow.h:15,
+                                  from main.cpp:4:
+                                  arcanoidengine.h:113: error: ISO C++ forbids declaration of ‘Board’ with no type
+                                  arcanoidengine.h:113: error: expected ‘;’ before ‘*’ token
+                                  arcanoidengine.h:115: error: ISO C++ forbids declaration of ‘Ball’ with no type
+                                  arcanoidengine.h:115: error: expected ‘;’ before ‘*’ token
+                                  arcanoidengine.h:118: error: ‘Block’ was not declared in this scope
+                                  arcanoidengine.h:118: error: template argument 1 is invalid
+                                  make: *** [main.o] Error 1
+

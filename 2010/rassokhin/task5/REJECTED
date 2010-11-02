@@ -1,0 +1,35 @@
+kkv@debian:/ws/amse-qt/2010/rassokhin/task5$ qmake -project
+kkv@debian:/ws/amse-qt/2010/rassokhin/task5$ qmake
+kkv@debian:/ws/amse-qt/2010/rassokhin/task5$ make
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. -o main.o main.cpp
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. -o simpleudpchat.o simpleudpchat.cpp
+/usr/bin/moc-qt4 -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. simpleudpchat.h -o moc_simpleudpchat.cpp
+g++ -c -pipe -O2 -Wall -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I. -o moc_simpleudpchat.o moc_simpleudpchat.cpp
+g++ -Wl,-O1 -o task5 main.o simpleudpchat.o moc_simpleudpchat.o    -L/usr/lib -lQtGui -lQtCore -lpthread 
+simpleudpchat.o: In function `SimpleUDPChat::constructObjects()':
+simpleudpchat.cpp:(.text+0x82): undefined reference to `QUdpSocket::QUdpSocket(QObject*)'
+simpleudpchat.o: In function `SimpleUDPChat::readMessage()':
+simpleudpchat.cpp:(.text+0x557): undefined reference to `QUdpSocket::hasPendingDatagrams() const'
+simpleudpchat.cpp:(.text+0x57b): undefined reference to `QUdpSocket::pendingDatagramSize() const'
+simpleudpchat.cpp:(.text+0x592): undefined reference to `QHostAddress::QHostAddress()'
+simpleudpchat.cpp:(.text+0x5df): undefined reference to `QUdpSocket::readDatagram(char*, long long, QHostAddress*, unsigned short*)'
+simpleudpchat.cpp:(.text+0x640): undefined reference to `QHostAddress::toString() const'
+simpleudpchat.cpp:(.text+0x805): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.cpp:(.text+0x82c): undefined reference to `QUdpSocket::hasPendingDatagrams() const'
+simpleudpchat.cpp:(.text+0x92b): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.o: In function `SimpleUDPChat::sendMessage()':
+simpleudpchat.cpp:(.text+0xbb2): undefined reference to `QHostAddress::QHostAddress()'
+simpleudpchat.cpp:(.text+0xbd6): undefined reference to `QHostAddress::setAddress(QString const&)'
+simpleudpchat.cpp:(.text+0xc82): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.cpp:(.text+0xe9c): undefined reference to `QUdpSocket::writeDatagram(char const*, long long, QHostAddress const&, unsigned short)'
+simpleudpchat.cpp:(.text+0x101a): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.cpp:(.text+0x10ed): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.o: In function `SimpleUDPChat::startUdpListener(int)':
+simpleudpchat.cpp:(.text+0x12cc): undefined reference to `QAbstractSocket::isValid() const'
+simpleudpchat.cpp:(.text+0x12f7): undefined reference to `QHostAddress::QHostAddress(QHostAddress::SpecialAddress)'
+simpleudpchat.cpp:(.text+0x130d): undefined reference to `QUdpSocket::bind(QHostAddress const&, unsigned short)'
+simpleudpchat.cpp:(.text+0x1318): undefined reference to `QHostAddress::~QHostAddress()'
+simpleudpchat.cpp:(.text+0x1478): undefined reference to `QHostAddress::~QHostAddress()'
+collect2: ld returned 1 exit status
+make: *** [task5] Error 1
+

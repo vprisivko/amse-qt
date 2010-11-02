@@ -1,0 +1,4 @@
+Invalid use Layouts:
+
+QLayout: Attempting to add QLayout "" to ChatDialog "", which already has a layout
+QLayout: Attempting to add QLayout "" to ChatDialog "", which already has a layout

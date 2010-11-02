@@ -97,6 +97,8 @@ void RemoteController::set() {
 
 	if (!mySocket->bind(6000)) {
 		std::cerr << "Try to use another port!\n";
+	} else {
+		myStartBtn->setEnabled(true);
 	}
 }
 

@@ -1,0 +1,8 @@
+USAGE:
+./BallDialog ipaddress port destIPAddress destPort
+./RemoteControl ipaddress port destIPAddress destPort
+
+For example:
+
+./BallDialog 127.0.0.1 11111 127.0.0.1 11112
+./RemoteControl 127.0.0.1 11112 127.0.0.1 11111

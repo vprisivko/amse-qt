@@ -21,9 +21,20 @@ Racket::Racket(int x, QObject *parent) : QObject(parent) {
 }
 
     
-void Racket::write(QDomElement *element) const {
-    QDomElement racket;
-    racket.setTagName("Racket");
+void Racket::write(QDomDocument *doc, QDomElement *element) const {
+    QDomElement racket = doc->createElement("Racket");
     racket.setAttribute("x", QString("%1").arg(myX));
     element->appendChild(racket);
+}
+    
+void Racket::goRight() {
+    myX += 20;
+}
+    
+void Racket::goLeft() {
+    myX -= 20;
+}
+    
+int Racket::getX() const {
+    return myX;
 }

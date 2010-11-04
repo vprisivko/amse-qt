@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QPaintEvent>
 #include <QTimerEvent>
+#include <QKeyEvent>
 
 #include <QUdpSocket>
 
@@ -33,10 +34,18 @@ public:
     void paintEvent(QPaintEvent *e);
     void timerEvent(QTimerEvent *e);
 
+    void keyPressEvent(QKeyEvent *e);
+
 private:
     State *myState;
     QUdpSocket *mySocket;
+    //int myPort;
+    QHostAddress myAddress;
     int myPort;
+    bool ready;
+
+private slots:
+    void readPendingDatagrams();
 };
 
 #endif   // ----- #ifndef MAINWIDGET_H -----

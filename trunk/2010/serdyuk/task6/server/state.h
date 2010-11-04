@@ -20,6 +20,7 @@
 #include <QString>
 #include <QObject>
 #include <QXmlInputSource>
+#include <QPoint>
 
 #include "racket.h"
 #include "ball.h"
@@ -32,9 +33,16 @@ private:
     int mySpareBalls;
     int myFieldWidth;
     int myFieldHeight;
-public:
-    const static int BALL_RADIUS = 20;
 
+    bool goRight;
+    bool goLeft;
+    bool start;
+
+    int myCount;
+public:
+    static const int INDENT = 4;
+    static const int TICKS_PER_DELAY = 10; // Frequency user can perform actions
+    
     State(int width, int height, QObject *parent = 0);
 
     State(QString currentState, Ball *ball, Racket *racket, int spareBalls, int fieldWidth, int fieldHeight, QObject *parent = 0);
@@ -42,11 +50,15 @@ public:
     static State* createInstance(QXmlInputSource *source, QObject *parent);
     QString write() const;
 
-    void tick();
+    QPoint tick();
 
     void changeState(QString state);
     Ball *getBall() const;
     Racket *getRacket() const;
+    QString getCurrentState() const;
+    int getFieldWidth() const;
+
+    bool doAction(QString action);
 };
 
 #endif   // ----- #ifndef STATE_H -----

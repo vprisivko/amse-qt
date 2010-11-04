@@ -14,12 +14,23 @@ BallDialog ::BallDialog( int _rad, int _vx, int _vy ){
     x = width()/2;
     y = height()/2;
 }
+bool BallDialog::isOutOfRange(){
+    if((x - xradius) < 0 || (x + xradius) > width() || (y - yradius) < 0 || (y + yradius) > height()) {
+        return true;
+    }
+    return false;
+}
 
 void BallDialog::paintEvent( QPaintEvent *) {
 
     p->begin( this );
     p->setBrush( Qt::SolidPattern );
     p->setPen( Qt::green );
+    if(isOutOfRange())
+    {
+     x =  x = width()/2;
+     y = height()/2;
+    }
     p->drawEllipse( QPoint( x,y ), xradius, yradius);
     p->end();
 

@@ -16,6 +16,7 @@ public:
     QTimer *bTimer;
     BallDialog( int rad = 20, int _vx = 1, int _vy = 2 );
     void paintEvent( QPaintEvent *);
+    bool isOutOfRange();
 public slots:
     void timeEvent();
 };

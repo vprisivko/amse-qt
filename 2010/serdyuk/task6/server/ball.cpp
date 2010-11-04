@@ -16,6 +16,8 @@
 
 #include "ball.h"
 
+#include <cstdlib>
+
 Ball::Ball(int x, int y, int vx, int vy, QObject *parent) : QObject(parent) {
     myX = x;
     myY = y;
@@ -24,9 +26,8 @@ Ball::Ball(int x, int y, int vx, int vy, QObject *parent) : QObject(parent) {
     myVy = vy;
 }
 
-void Ball::write(QDomElement *element) const {
-    QDomElement ball;
-    ball.setTagName("Ball");
+void Ball::write(QDomDocument *doc, QDomElement *element) const {
+    QDomElement ball = doc->createElement("Ball");
     ball.setAttribute("x", QString("%1").arg(myX));
     ball.setAttribute("y", QString("%1").arg(myY));
     ball.setAttribute("vx", QString("%1").arg(myVx));
@@ -61,4 +62,11 @@ void Ball::setX(int x) {
     
 void Ball::setY(int y) {
     myY = y;
+}
+
+void Ball::initV() {
+    while (myVx != 0 && myVy != 0) {
+        myVx = rand() % 11 - 5;
+        myVy = rand() % 11 - 5;
+    }
 }

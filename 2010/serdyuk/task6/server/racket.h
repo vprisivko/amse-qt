@@ -18,16 +18,23 @@
 #define RACKET_H
 
 #include <QObject>
-#include <QDomElement>
+#include <QDomDocument>
 
 class Racket : public QObject {
 private:
     int myX;
 
 public:
+    static const int WIDTH = 80;
+    static const int HEIGHT = 5;
     Racket(int x, QObject *parent = 0);
 
-    void write(QDomElement *element) const;
+    void goRight();
+    void goLeft();
+
+    int getX() const;
+
+    void write(QDomDocument *doc, QDomElement *element) const;
 };
 
 #endif   // ----- #ifndef RACKET_H -----

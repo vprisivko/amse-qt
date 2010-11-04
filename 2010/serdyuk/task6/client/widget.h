@@ -20,11 +20,14 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QUdpSocket>
+#include <QKeyEvent>
 
 class Widget : public QWidget {
     Q_OBJECT;
 public:
-    Widget(QString port, QString address, QWidget *parent = 0);
+    Widget(QString address, QString port, QWidget *parent = 0);
+
+    void keyPressEvent(QKeyEvent *e);
 
 private:
     QPushButton *myLeftButton;
@@ -32,6 +35,14 @@ private:
     QPushButton *myStartButton;
     QUdpSocket *mySocket;
 
+    QHostAddress myAddress;
+    int myPort;
+    
+private slots:
+    void readPendingDatagrams();
+    void goRight();
+    void goLeft();
+    void start();
 };
 
 #endif   // ----- #ifndef WIDGET_H -----

@@ -18,7 +18,7 @@
 #define BALL_H
 
 #include <QObject>
-#include <QDomElement>
+#include <QDomDocument>
 
 class Ball : public QObject {
 private:
@@ -29,9 +29,10 @@ private:
     int myVy;
 
 public:
+    static const int RADIUS = 20;
     Ball(int x, int y, int vx, int vy, QObject *parent = 0);
 
-    void write(QDomElement *element) const;
+    void write(QDomDocument *doc, QDomElement *element) const;
 
     void move();
     void flipV();
@@ -40,6 +41,7 @@ public:
     int getY() const;
     void setX(int x);
     void setY(int y);
+    void initV();
 };
 
 #endif   // ----- #ifndef BALL_H -----

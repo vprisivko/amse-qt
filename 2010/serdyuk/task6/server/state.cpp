@@ -22,7 +22,7 @@
 #include <cstdlib>
 
 #include "statehandler.h"
-    
+
 State::State(int width, int height, QObject *parent) : QObject(parent) {
     myCurrentState = "begin";
     mySpareBalls = 3;
@@ -30,6 +30,10 @@ State::State(int width, int height, QObject *parent) : QObject(parent) {
     myRacket = new Racket(width / 2, this);
     myFieldWidth = width;
     myFieldHeight = height;
+
+    goRight = false;
+    goLeft = false;
+    start = false;
 }
 
     
@@ -47,26 +51,23 @@ QString State::write() const {
     QDomElement root = doc.createElement("State");
     doc.appendChild(root);
 
-    QDomElement state;
-    state.setTagName("CurrentState");
+    QDomElement state = doc.createElement("CurrentState");
     state.setAttribute("state", myCurrentState);
     root.appendChild(state);
 
-    QDomElement spareBalls;
-    spareBalls.setTagName("Racket");
+    QDomElement spareBalls = doc.createElement("Racket");
     spareBalls.setAttribute("count", QString("%1").arg(mySpareBalls));
     root.appendChild(spareBalls);
 
-    QDomElement field;
-    field.setTagName("Field");
+    QDomElement field = doc.createElement("Field");
     field.setAttribute("width", QString("%1").arg(myFieldWidth));
     field.setAttribute("height", QString("%1").arg(myFieldHeight));
     root.appendChild(field);
 
-    myBall->write(&root);
-    myRacket->write(&root);
+    myBall->write(&doc, &root);
+    myRacket->write(&doc, &root);
 
-    return doc.toString();
+    return doc.toString(INDENT);
 }
 
 State* State::createInstance(QXmlInputSource *source, QObject *parent) {
@@ -90,42 +91,76 @@ State* State::createInstance(QXmlInputSource *source, QObject *parent) {
     return new State(currentState, ball, racket, spareBalls, fieldWidth, fieldHeight, parent);
 }
     
-void State::tick() {
+QPoint State::tick() {
+    if (start) { // User pressed "start"
+        if (myCurrentState == "begin") {
+            myCurrentState = "run";
+            myBall->setX(myFieldWidth / 2);
+            myBall->setY(myFieldHeight / 2);
+            myBall->initV();
+        } else if (myCurrentState == "fall") {
+            if (mySpareBalls > 0) {
+                --mySpareBalls;
+                myCurrentState = "run";
+            }
+            myBall->setX(myFieldWidth / 2);
+            myBall->setY(myFieldHeight / 2);
+            myBall->initV();
+        }
+        start = false;
+    }
+
     if (myCurrentState == "begin" || myCurrentState == "fall" || myCurrentState == "gameover") {
-        return;
+        return QPoint(0, 0);
+    }
+
+    if (myCount % TICKS_PER_DELAY == 0) {
+        if (goRight && myRacket->getX() + Racket::WIDTH < myFieldWidth) { // User pressed "left" button
+            myRacket->goRight();
+            goRight = false;
+        }
+        if (goLeft && myRacket->getX() > 0) { // User pressed "right" button
+            myRacket->goLeft();
+            goLeft = false;
+        }
     }
     myBall->move();
 
-    int xRadius = BALL_RADIUS;
-    int yRadius = BALL_RADIUS;
-    if (myBall->getX() - BALL_RADIUS < 0) {
+    int xRadius = Ball::RADIUS;
+    int yRadius = Ball::RADIUS;
+    if (myBall->getX() - Ball::RADIUS < 0) {
         xRadius = myBall->getX();
     } 
-    if (myBall->getX() + BALL_RADIUS > myFieldWidth) {
+    if (myBall->getX() + Ball::RADIUS > myFieldWidth) {
         xRadius = myFieldWidth - myBall->getX();
     }
-    if (myBall->getX() - BALL_RADIUS < -BALL_RADIUS / 2) {
+    if (myBall->getX() - Ball::RADIUS < -Ball::RADIUS / 2) {
         myBall->flipV();
-        myBall->setX(BALL_RADIUS / 2);
+        myBall->setX(Ball::RADIUS / 2);
     }
-    if (myBall->getX() + BALL_RADIUS > myFieldWidth + BALL_RADIUS / 2) {
+    if (myBall->getX() + Ball::RADIUS > myFieldWidth + Ball::RADIUS / 2) {
         myBall->flipV();
-        myBall->setX(myFieldWidth - BALL_RADIUS / 2);
+        myBall->setX(myFieldWidth - Ball::RADIUS / 2);
     }
-    if (myBall->getY() - BALL_RADIUS < 0) {
-        yRadius = myBall->getY();
+    if (myBall->getY() - Ball::RADIUS < Racket::HEIGHT) {
+        yRadius = myBall->getY() - Racket::HEIGHT;
     }
-    if (myBall->getY() + BALL_RADIUS > myFieldHeight) {
+    if (myBall->getY() + Ball::RADIUS > myFieldHeight) {
         yRadius = myFieldHeight - myBall->getY();
     }
-    if (myBall->getY() - BALL_RADIUS < -BALL_RADIUS / 2) {
+    if (myBall->getY() - Ball::RADIUS < -Ball::RADIUS / 2) {
         myBall->flipH();
-        myBall->setY(BALL_RADIUS / 2);
+        myBall->setY(Ball::RADIUS / 2);
     }
-    if (myBall->getY() + BALL_RADIUS > myFieldHeight + BALL_RADIUS / 2) {
-        myBall->flipH();
-        myBall->setY(myFieldHeight - BALL_RADIUS / 2);
+    if (myBall->getY() + Ball::RADIUS > myFieldHeight + Ball::RADIUS / 2 + Racket::HEIGHT) {
+        if (myBall->getX() > myRacket->getX() && myBall->getX() < myRacket->getX() + Racket::WIDTH) {
+            myBall->flipH();
+            myBall->setY(myFieldHeight - Ball::RADIUS / 2);
+        } else {
+            myCurrentState = "fall";
+        }
     }
+    return QPoint(xRadius, yRadius);
 }
 
 void State::changeState(QString state) {
@@ -138,4 +173,25 @@ Ball *State::getBall() const {
     
 Racket *State::getRacket() const {
     return myRacket;
+}
+    
+bool State::doAction(QString action) {
+    if (action == "left") {
+        goLeft = true;
+    } else if (action == "right") {
+        goRight = true;
+    } else if (action == "start") {
+        start = true;
+    } else {
+        return false;
+    }
+    return true;
+}
+
+QString State::getCurrentState() const {
+    return myCurrentState;
+}
+    
+int State::getFieldWidth() const {
+    return myFieldWidth;
 }

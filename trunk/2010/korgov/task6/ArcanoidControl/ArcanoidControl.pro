@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = ArconidControl
+TARGET = ArcanoidControl
 QT += core \
     gui \
     xml \
@@ -7,3 +7,5 @@ QT += core \
 HEADERS += ArconidControl.h
 SOURCES += main.cpp \
     ArconidControl.cpp
+FORMS += 
+RESOURCES += 

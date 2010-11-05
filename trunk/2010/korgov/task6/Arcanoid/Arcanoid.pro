@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = Arconoid
+TARGET = Arcanoid
 QT += core \
     gui \
     xml \
@@ -9,3 +9,4 @@ HEADERS += BallWidget.h \
 SOURCES += BallWidget.cpp \
     Arconoid.cpp \
     main.cpp
+RESOURCES += 

@@ -94,10 +94,10 @@ void ArconidControl::reciveStatus(){
 
         QPoint ballCoords;
         QSize windowSize;
-        int platformX;
-        int platformWidth;
-        int lives;
-        int isPlaying;
+        int platformX = 0;
+        int platformWidth = 0;
+        int lives = 0;
+        int isPlaying = 0;
 
 
         while(!n.isNull()){

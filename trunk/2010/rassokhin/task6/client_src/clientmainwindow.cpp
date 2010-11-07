@@ -58,14 +58,16 @@ void ClientMainWindow::createObjects() {
 }
 
 void ClientMainWindow::connectObjects() {
-    connect(settingsDialogAct, SIGNAL( triggered() ), SLOT( runSettingsDialog() ));
-    connect(connectAct, SIGNAL( triggered() ), SLOT( connectToGame() ));
-    connect(disconnectAct, SIGNAL( triggered() ), SLOT( disconnectFromGame() ));
-    connect(quitAct, SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ));
+    connect(settingsDialogAct, SIGNAL(triggered()), SLOT(runSettingsDialog()));
+    connect(connectAct, SIGNAL(triggered()), SLOT(connectToGame()));
+    connect(disconnectAct, SIGNAL(triggered()), SLOT(disconnectFromGame()));
+    connect(quitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
     connect(connectionSocket, SIGNAL(readyRead()), SLOT(readMessage()));
 
-    connect(controls,SIGNAL(sendingDataToServer(QByteArray)),SLOT(sendMessage(QByteArray)));
+    connect(controls, SIGNAL(sendingDataToServer(QByteArray)), SLOT(sendMessage(QByteArray)));
+
+    connect(this, SIGNAL(newIncomingMessage(QByteArray)), controls, SLOT(tryToResolveMessage(QByteArray)));
 }
 
 void ClientMainWindow::loadSettings() {
@@ -78,7 +80,6 @@ void ClientMainWindow::loadSettings() {
 }
 
 void ClientMainWindow::saveSettings() {
-    qDebug("ClientMainWindow::saveSettings()");
     settings->beginGroup("Client");
     settings->setValue("mainwindow.size",     size());
     settings->setValue("mainwindow.position", pos());
@@ -128,12 +129,12 @@ void ClientMainWindow::readMessage() {
     while (connectionSocket->hasPendingDatagrams()) {
         QByteArray datagram;
         datagram.resize(connectionSocket->pendingDatagramSize());
-        //QHostAddress sender;
-        //quint16 senderPort;
-        if( connectionSocket->readDatagram(datagram.data(), datagram.size()/*, &sender,
-                                    &senderPort*/) == -1)
+        QHostAddress sender;
+        quint16 senderPort;
+        if( connectionSocket->readDatagram(datagram.data(), datagram.size(), &sender,
+                                    &senderPort) == -1)
             continue;
-
+        if ((sender != server.address) && (senderPort != server.port)) continue;
         if(!server.connected) {
             Command * cmd = Command::deserialize(datagram);
             if (cmd!=0 && (cmd->getType() & Command::ACCEPTCONNECTION)) {
@@ -147,7 +148,6 @@ void ClientMainWindow::readMessage() {
 }
 
 void ClientMainWindow::closeEvent(QCloseEvent *) {
-    qDebug("ClientMainWindow::closeEvent()");
     disconnectFromGame();
     saveSettings();
 }

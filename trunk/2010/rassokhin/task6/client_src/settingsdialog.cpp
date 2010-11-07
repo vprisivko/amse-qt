@@ -42,7 +42,6 @@ void SettingsDialog::connectObjects() {
 }
 
 void SettingsDialog::accept() {
-    qDebug("SettingsDialog::accept()");
     settings->setAddress(leAddress->text());
     quint16 port = lePort->text().toInt();
     settings->setPort(port);
@@ -54,7 +53,6 @@ void SettingsDialog::cancel() {
 }
 
 void SettingsDialog::reloadSettings() {
-    qDebug("SettingsDialog::reloadSettings()");
     leAddress->setText(settings->getAddress());
     lePort->setText(QString::number(settings->getPort()));
 }

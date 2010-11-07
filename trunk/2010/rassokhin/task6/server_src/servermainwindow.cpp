@@ -5,6 +5,7 @@
 #include <QMessageBox>
 
 #include "../command.hpp"
+#include "../publicstate.hpp"
 
 ServerMainWindow::ServerMainWindow(QWidget * parent):
         QMainWindow(parent) {
@@ -12,19 +13,14 @@ ServerMainWindow::ServerMainWindow(QWidget * parent):
     createObjects();
     connectObjects();
     loadSettings();
-    settingsDialog->reloadSettings();
-
-    // Game
-//    m_newAction = KStandardGameAction::gameNew(this, SLOT(newGame()), actionCollection());
-//    KStandardGameAction::end(this, SLOT(closeGame()), actionCollection());
-//    m_pauseAction = KStandardGameAction::pause(this, SLOT(pauseGame()), actionCollection());
-//    KStandardGameAction::highscores(this, SLOT(showHighscore()), actionCollection());
-//    KStandardGameAction::quit(this, SLOT(close()), actionCollection());
+    //settingsDialog->reloadSettings();
 
     setFocusPolicy(Qt::StrongFocus);
 
+    gameView->resize(640, 480);
+    gameView->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+
     setFocus();
-    resize(660,500);
 }
 
 bool ServerMainWindow::startUdpListener(quint16 port, quint16 endPort) {
@@ -43,22 +39,22 @@ bool ServerMainWindow::startUdpListener(quint16 port, quint16 endPort) {
 void ServerMainWindow::createObjects() {
 
     //actions
-    settingsDialogAct = new QAction(tr("&Settings"), this);
+    //settingsDialogAct = new QAction(tr("&Settings"), this);
     quitAct = new QAction(tr("&Quit"), this);
 
     //menus
     menuGame = menuBar()->addMenu(tr("&Game"));
     //menuHelp = menuBar()->addMenu(tr("&Help"));
 
-    menuGame->addAction(settingsDialogAct);
-    menuGame->addSeparator();
+    //menuGame->addAction(settingsDialogAct);
+    //menuGame->addSeparator();
     menuGame->addAction(quitAct);
 
-    serverSettings = new ServerSettings();
+    //serverSettings = new ServerSettings();
     settings = new QSettings("ru.amse.qt2010.rassokhin", "arcanoid", this);
-    settingsDialog = new ServerSettingsDialog(serverSettings, this);
+    //settingsDialog = new ServerSettingsDialog(serverSettings, this);
     connectionSocket = new QUdpSocket(this);
-    gameEngine = new ArcanoidEngine(QRect(0,0,640,480) ,this);
+    gameEngine = new ArcanoidEngine(QRect(0, 0, 640, 480) ,this);
     gameView = new ArcanoidViewWidget(gameEngine, this);
     gameView->setScene(gameEngine);
 
@@ -68,22 +64,19 @@ void ServerMainWindow::createObjects() {
 }
 
 void ServerMainWindow::connectObjects() {
-    connect(settingsDialogAct, SIGNAL( triggered() ), SLOT( runSettingsDialog() ));
+    //connect(settingsDialogAct, SIGNAL( triggered() ), SLOT( runSettingsDialog() ));
     connect(quitAct, SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ));
 
     connect(connectionSocket, SIGNAL(readyRead()), SLOT(readMessage()));
     
-//    connect(gameView, SIGNAL( levelChanged( unsigned int ) ), this, SLOT( displayLevel( unsigned int ) ));
-//    connect(gameView, SIGNAL( scoreChanged( unsigned int ) ), this, SLOT( displayScore( unsigned int ) ));
-//    connect(gameView, SIGNAL( livesChanged( unsigned int ) ), this, SLOT( displayLives( unsigned int ) ));
-    connect(gameView, SIGNAL(stateChanged(ArcanoidViewWidget::State)), this, SLOT(gameStateChanged(ArcanoidViewWidget::State) ));
+    connect(gameEngine, SIGNAL(stateChanged(ArcanoidEngine::State)), SLOT(gameStateChanged(ArcanoidEngine::State)));
 }
 
 void ServerMainWindow::loadSettings() {
     settings->beginGroup("Server");
     resize( settings->value("mainwindow.size",     QSize (640, 480) ).toSize());
     move(   settings->value("mainwindow.position", QPoint(120, 160) ).toPoint());
-    serverSettings->loadSettings(settings);
+    //serverSettings->loadSettings(settings);
     settings->endGroup();
 
 }
@@ -92,14 +85,14 @@ void ServerMainWindow::saveSettings() {
     settings->beginGroup("Server");
     settings->setValue("mainwindow.size",     size());
     settings->setValue("mainwindow.position", pos());
-    serverSettings->saveSettings(settings);
+    //serverSettings->saveSettings(settings);
     settings->endGroup();
 }
 
-void ServerMainWindow::runSettingsDialog() {
-    settingsDialog->reloadSettings();
-    settingsDialog->show();
-}
+//void ServerMainWindow::runSettingsDialog() {
+//    settingsDialog->reloadSettings();
+//    settingsDialog->show();
+//}
 
 void ServerMainWindow::sendMessage(QByteArray message, bool force) {
     if (!client.connected && !force) return;
@@ -130,38 +123,7 @@ void ServerMainWindow::readMessage() {
                                     &senderPort) == -1)
             continue;
 
-        statusBar()->showMessage(datagram, 1000);
-        Command * cmd = Command::deserialize(datagram);
-        if (cmd!=0) {
-            switch(cmd->getType()) {
-            case Command::DISCONNECT: {
-                    disconnect();
-                    statusBar()->showMessage("Client disconnected", 10000);
-                } break;
-            case Command::CONNECT: {
-                    gameView->newGame();
-                    statusBar()->showMessage("Client connected", 10000);
-                    client.address = sender;
-                    client.port = senderPort;
-                    sendMessage(Command(Command::ACCEPTCONNECTION).serialize(), true);
-                } break;
-            case Command::MOVE_LEFT: {
-                } break;
-            case Command::MOVE_RIGHT: {
-                } break;
-            case Command::PLAYPAUSE: {
-                    static bool paused = false;
-                    gameView->setPaused(!paused);
-                    paused = !paused;
-                    statusBar()->showMessage("play|pause command", 10000);
-                } break;
-            default: break;
-            }
-            delete cmd;
-        }
-
-
-        emit newIncomingMessage(datagram);
+        parseMessage(datagram, sender, senderPort);
     }
 }
 
@@ -169,67 +131,73 @@ void ServerMainWindow::closeEvent(QCloseEvent *) {
     disconnect();
     saveSettings();
 }
-/*
- * Copyright (C) 2007-2008 John-Paul Stanford <jp@stanwood.org.uk>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this program; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 
-/**
- * create the action events create the gui.
- */
+void ServerMainWindow::parseMessage(const QByteArray &message, const QHostAddress &senderAddress, quint16 senderPort) {
+    Command * cmd = Command::deserialize(message);
+    if (cmd == 0) return;
 
-
-void ServerMainWindow::newGame() {
-    // Check for running game
-    closeGame();
-    if (gameView->state() == ArcanoidViewWidget::BeforeFirstGame
-            || gameView->state() == ArcanoidViewWidget::GameOver) {
-        gameView->newGame();
+    switch(cmd->getType()) {
+    case Command::DISCONNECT: {
+            disconnect();
+            statusBar()->showMessage("Client disconnected", 10000);
+            gameEngine->closeGame();
+        } break;
+    case Command::CONNECT: {
+            statusBar()->showMessage("Client connected", 10000);
+            client.address = senderAddress;
+            client.port = senderPort;
+            client.connected = true;
+            sendMessage(Command(Command::ACCEPTCONNECTION).serialize(), true);
+            gameStateChanged(ArcanoidEngine::BeforeFirstGame);
+        } break;
+    case Command::MOVE_LEFT: {
+            gameEngine->moveBoardLeft();
+        } break;
+    case Command::MOVE_RIGHT: {
+            gameEngine->moveBoardRight();
+        } break;
+    case Command::PLAYPAUSE: {
+            switch (gameEngine->state()) {
+            case ArcanoidEngine::Paused: {
+                    gameEngine->setPaused(false);
+                } break;
+            case ArcanoidEngine::BetweenLevels: {
+                    gameEngine->nextLevel();
+                } break;
+            case ArcanoidEngine::Running: {
+                    gameEngine->setPaused(true);
+                } break;
+            case ArcanoidEngine::BeforeFirstGame:
+            case ArcanoidEngine::GameOver: {
+                    gameEngine->newGame();
+                } break;
+            }
+            statusBar()->showMessage("play|pause command", 3000);
+        } break;
+    default: break;
     }
+    delete cmd;
 }
 
-void ServerMainWindow::pauseGame() {
-    if (gameView->state() == ArcanoidViewWidget::Paused) {
-        gameView->setPaused(false);
-    }
-    else {
-        gameView->setPaused(true);
-    }
-}
-
-void ServerMainWindow::closeGame() {
-    if (gameView->state() == ArcanoidViewWidget::BeforeFirstGame
-            || gameView->state() == ArcanoidViewWidget::GameOver) {
-        return;
-    }
-    gameView->closeGame();
-}
-
-void ServerMainWindow::gameStateChanged(ArcanoidViewWidget::State state)
-{
-    switch (state)
-    {
-    case ArcanoidViewWidget::Paused:
+void ServerMainWindow::gameStateChanged(ArcanoidEngine::State state) {
+    PublicState ps;
+    ps.leftAllowed = false;
+    ps.rightAllowed = false;
+    ps.playPauseAllowed = true;
+    switch (state) {
+    case ArcanoidEngine::Paused:
         break;
-    case ArcanoidViewWidget::Running:
+    case ArcanoidEngine::Running: {
+        ps.leftAllowed = true;
+        ps.rightAllowed = true;
+        } break;
+    case ArcanoidEngine::BetweenLevels:
         break;
-    case ArcanoidViewWidget::GameOver:
+    case ArcanoidEngine::GameOver:
         break;
     default:
         break;
     }
+    sendMessage(ps.serialize());
 }
 

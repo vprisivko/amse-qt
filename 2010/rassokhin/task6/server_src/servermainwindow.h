@@ -10,8 +10,6 @@
 #include <QHostAddress>
 #include <QByteArray>
 
-#include "serversettings.h"
-#include "serversettingsdialog.h"
 #include "arcanoidengine.h"
 #include "arcanoidviewwidget.h"
 
@@ -20,17 +18,13 @@ class ServerMainWindow : public QMainWindow {
 
 public:
     ServerMainWindow(QWidget * parent = 0);
-
     bool startUdpListener(quint16 startPort, quint16 endPort = 0);
 
 protected:
     virtual void closeEvent(QCloseEvent *);
 
-signals:
-    void newIncomingMessage(QByteArray message);
-
 private slots:
-    void runSettingsDialog();
+    //void runSettingsDialog();
 
     void sendMessage(QByteArray message, bool force = false);
     void readMessage();
@@ -39,13 +33,13 @@ private slots:
 private:
     QUdpSocket * connectionSocket;
 
-    struct {
+    struct ClientStruct {
         QHostAddress address;
         quint16 port;
         bool connected;
     } client;
 
-    QAction * settingsDialogAct;
+    //QAction * settingsDialogAct;
     QAction * quitAct;
     QMenu * menuGame;
     //QMenu * menuHelp;
@@ -54,8 +48,8 @@ private:
     ArcanoidEngine * gameEngine;
 
     QSettings * settings;
-    ServerSettingsPtr serverSettings;
-    ServerSettingsDialog * settingsDialog;
+//    ServerSettingsPtr serverSettings;
+//    ServerSettingsDialog * settingsDialog;
 
 
     void createObjects();
@@ -63,16 +57,11 @@ private:
     void loadSettings();
     void saveSettings();
 
+    void parseMessage(const QByteArray & message, const QHostAddress & senderAddress, quint16 senderPort);
 
 private slots:
-    void closeGame();
-    void newGame();
-    void pauseGame();
+    void gameStateChanged(ArcanoidEngine::State state );
 
-    void gameStateChanged( ArcanoidViewWidget::State state );
-
-private:
-    void setupActions();
 };
 
 

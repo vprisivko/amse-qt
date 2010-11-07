@@ -19,9 +19,10 @@ ClientControlsWidget::ClientControlsWidget(QWidget *parent) : QWidget(parent) {
 
     leftButton->setMinimumHeight(50);
     rightButton->setMinimumHeight(50);
+
     leftButton->setDisabled(true);
     rightButton->setDisabled(true);
-    //playPauseButton->setDisabled(true);
+    playPauseButton->setDisabled(true);
 
     connect(leftButton,SIGNAL(clicked()),SLOT(leftClick()));
     connect(rightButton,SIGNAL(clicked()),SLOT(rightClick()));
@@ -53,12 +54,13 @@ void ClientControlsWidget::tryToResolveMessage(QByteArray message) {
     PublicState * ps = PublicState::deserialize(message);
     if(ps == 0) return;
     applyState(PublicState(*ps));
+    delete ps;
 }
 
-void ClientControlsWidget::applyState(const PublicState &/*ps*/) {
-    ///if (ps.isActive())
-
-    // TODO обработка состояний
+void ClientControlsWidget::applyState(const PublicState & ps) {
+    leftButton->setDisabled(!ps.leftAllowed);
+    rightButton->setDisabled(!ps.rightAllowed);
+    playPauseButton->setDisabled(!ps.playPauseAllowed);
 }
 
 

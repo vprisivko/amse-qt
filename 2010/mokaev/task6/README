@@ -1,0 +1,23 @@
+*** Arkanoid by Mokaev T. ***
+
+This is the "Arkanoid" game with remote controller based on UDP communication.
+
+1) Installation:
+Set ip and port for controller and arcanoid application in the ipconfig file ( in each subapplication folder ).
+Than in the main application folder
+
+qmake -makefile
+make
+
+Than execute: ./PlayGround and ./Controller in appropriate subfolders
+
+2) Control:
+--To connect controller and arcanoid input appropriate ips and ports in text boxes "ip" and "port" of each application
+  and press "Connect" button.  
+--To start game press "Go!" button.
+--To move rocket use "Left" / "Right" buttons on the remote controller or "A" / "D" hotkeys on the keyboard.
+
+
+3) Remember: You've got only 3 balls, so be carefull! Good luck!
+
+

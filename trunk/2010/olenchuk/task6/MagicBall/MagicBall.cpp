@@ -11,40 +11,38 @@
 
 
 MagicBall :: MagicBall(QWidget *parent) : QDialog(parent) {
-	toPort = 13013;
+	blink = false;
+	livesLineGradation = 3;
+	port = 0;
+	toPort = 0;
+	ipAddress = "";
+	timerPaint = new QTimer(this);
+	timerBlink = new QTimer(this);
 	ball = new Ball();	
 	racket = new Racket();
-	state = new State(ball, racket);
-	toPortEdit = new QLineEdit;
-	commandHandler = new SaxHandler(this);
 	
-	ball->setWindowSize(width(), height());
 	racket->setWindowSize(width(), height());
 	racket->setCoordinates(width()/2, height() - 30);
-	
-	qsrand(time(0));
-	x = 0;
-	y = 0;
-	x = qrand() % 4;
-	y = qrand() % 4;
-	
-	if (x > 1) {
-		x = 1;
-	} else {
-		x = -1;
-	}
-	if (y < 1) {
-		y = 1;
-	} else {
-		y = -1;
-	}
-	speed = 1;
-	timer = startTimer(20);
-	
-	setWindowTitle(tr("Magic Ball"));
+	ball->setWindowSize(width(), height());
+	ball->setCenterX(0);
+	ball->setCenterY(0);
+	state = new State(this);
+	commandHandler = new SaxHandler(this);
+	setPort();
+	setToPort();
+
+	connect(timerPaint, SIGNAL(timeout()), this, SLOT(updateTimerPaint()));
+	connect(timerBlink, SIGNAL(timeout()), this, SLOT(updateTimerBlink()));
 }
-bool MagicBall :: initSocket(int port) {
-	this->port = port;
+void MagicBall :: startTimerPaint() {
+	timerPaint->start(5);
+}
+void MagicBall :: timeControl() {
+	timerPaint->stop();
+	timerBlink->start(1000);
+	QTimer :: singleShot(5000, this, SLOT(updateTimers()));
+}
+bool MagicBall :: initSocket() {
 	udpSocket = new QUdpSocket(this);
 	if (udpSocket->isValid()) {
 		return false;
@@ -60,20 +58,16 @@ bool MagicBall :: initSocket(int port) {
 	if (ipAddress.isEmpty()) {
 		ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 	}
-	QHostAddress hostAddress;
 	hostAddress.setAddress(ipAddress);
 	if (!(udpSocket->bind(hostAddress, port))) {
 		return false;
 	}
 	
-	setWindowTitle("Port: " + QString::number(port) + " " + "ip: " + ipAddress);
+	setWindowTitle(tr("Magic Ball Port: ") + QString::number(port) + tr(" ip: ") + ipAddress);
 	
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(awaitCommand()));
-	
+
 	return true;
-}
-int MagicBall :: getSpeed() {
-	return speed;
 }
 void MagicBall :: sendState() {
 	QDomDocument stateDoc;
@@ -82,20 +76,37 @@ void MagicBall :: sendState() {
 	QByteArray datagram;
 	datagram.append(stateDoc.toString().toAscii());
 
-	QHostAddress destination;
-	destination.setAddress(ipAddress);
-	
-	//quint16 destinationPort = toPort->text().toInt();
+	if (toPort == 0) {
+		setToPort();
+	}
 	quint16 destinationPort = toPort;
     	if (destinationPort == 0) {
-		QMessageBox::warning(0, "Chat", "Enter to send destination");
+		QMessageBox::warning(0, "Magic Ball", "Enter to send destination");
 		return;
 	}
 
-	qint64 sended = udpSocket->writeDatagram(datagram.data(), destination, destinationPort);
+	qint64 sended = udpSocket->writeDatagram(datagram.data(), hostAddress, destinationPort);
 	if (sended == -1) {
-		QMessageBox::warning(0, "Chat", "Network failure");
+		QMessageBox::warning(0, "Magic Ball", "Network failure");
 		return;
+	}
+}
+void MagicBall :: setPort() {
+	bool ok;
+	int port = QInputDialog :: getInt(this, tr("Port"), tr("Enter Port, range 0....65535"), 10000, 0, 65535, 1, &ok);
+	if (ok) {
+		this->port = port;
+		if (!(initSocket())) {
+			QMessageBox::critical(0, "Magic Ball", "Port " + QString::number(port) + " is busy");
+			setPort();
+		}
+	}
+}
+void MagicBall :: setToPort() {
+	bool ok;
+	int toPort = QInputDialog :: getInt(this, tr("Destination Port"), tr("Enter toPort, range 0....65535"), 10001, 0, 65535, 1, &ok);
+	if (ok) {
+		this->toPort = toPort;
 	}
 }
 void MagicBall :: awaitCommand() {
@@ -110,73 +121,22 @@ void MagicBall :: awaitCommand() {
 		commandHandler->readDatagram(datagram);
 	//}
 }
-void MagicBall::timerEvent(QTimerEvent *event) {
-	
-	if (event->timerId() != timer) {
-		return;
-	}
-
-	
-	if (ball->getCenter().x() - ball->getDefRad() <= rect().x()) {
-		if (ball->getRadius().x() <= ball->getDefRad()/4) {
-			x = -x;
-		}
-		if ((ball->getRadius().x() + x) <= ball->getDefRad()) {
-			ball->setRadiusX(ball->getRadius().x() + x);
-		}
-	}
-	if (ball->getCenter().y() - ball->getDefRad() <= rect().y()) {
-		if (ball->getRadius().y() <= ball->getDefRad()/4) {
-			y = -y;
-		}
-		if ((ball->getRadius().y() + y) <= ball->getDefRad()) {
-			ball->setRadiusY(ball->getRadius().y() + y);
-		}
-	}
-	if (ball->getCenter().x() + ball->getDefRad() >= width()) {
-		if (ball->getRadius().x() <= ball->getDefRad()/4) {
-			x = -x;
-		}
-		if ((ball->getRadius().x() - x) <= ball->getDefRad()) {
-			ball->setRadiusX(ball->getRadius().x() - x);
-		}
-	}
-	
-	if (ball->getCenter().y() + ball->getDefRad() >= racket->getCoordinates().y()) {
-		if ((ball->getCenter().x() + ball->getDefRad() >= racket->getCoordinates().x()) & 
-					(ball->getCenter().x() - ball->getDefRad() <= racket->getCoordinates().x() + racket->getRacketSize().width())) {
-			if (ball->getRadius().y() <= ball->getDefRad()/4) {
-				y = -y;
-			}
-			if ((ball->getRadius().y() - y) <= ball->getDefRad()) {
-				ball->setRadiusY(ball->getRadius().y() - y);
-			}
-		}
-
-		if ((ball->getCenter().x() - ball->getDefRad() <= racket->getCoordinates().x() + racket->getRacketSize().width()) & 
-					(ball->getCenter().x() + ball->getDefRad() >= racket->getCoordinates().x())) {
-			if (ball->getRadius().y() <= ball->getDefRad()/4) {
-				y = -y;
-			}
-			if ((ball->getRadius().y() - y) <= ball->getDefRad()) {
-				ball->setRadiusY(ball->getRadius().y() - y);
-			}
-		}
-	}
-	
-	if (ball->getCenter().y() + ball->getDefRad() >= height()) {
-		if (ball->getRadius().y() <= ball->getDefRad()/4) {
-			y = -y;
-			if (ball->getLives() > 0)
-				ball->setLives(ball->getLives() - 1);
-		}
-		if ((ball->getRadius().y() - y) <= ball->getDefRad()) {
-			ball->setRadiusY(ball->getRadius().y() - y);
-		}
-	}
-	ball->setCenterX(ball->getCenter().x() + x);
-	ball->setCenterY(ball->getCenter().y() + y);
+void MagicBall :: updateTimerPaint() {
+	state->updateState();
 	update();
+}
+void MagicBall :: updateTimerBlink() {
+	blink = blink ? false : true;
+	update();
+}
+void MagicBall :: updateTimers() {
+	timerBlink->stop();
+	blink = false;
+	ball->setCenterX(0);
+	ball->setCenterY(0);
+	if (state->getLives() != 0) {
+		startTimerPaint();
+	}
 }
 void MagicBall :: paintEvent(QPaintEvent *) {
 	QPainter painter(this);
@@ -198,19 +158,35 @@ void MagicBall :: paintEvent(QPaintEvent *) {
 	ball->setWindowSize(width(), height());
 	racket->setWindowSize(width(), height());
 
+	if (state->getLives() == 3) {
+		painter.setBrush(Qt :: red);
+	} else {
+		QLinearGradient linearGradient(0, 5, width(), 5);
+		linearGradient.setColorAt(0, Qt :: red);
+		linearGradient.setColorAt(state->getLives()/livesLineGradation, Qt :: white);
+		painter.setBrush(linearGradient);
+	}
+	painter.setPen(Qt :: black);
+	QRectF drawLives(0, 0, width(), 10);
+	painter.drawRoundedRect(drawLives, 0, 0, Qt :: RelativeSize);
+	
+	
 	painter.setBrush(Qt::Dense1Pattern);
 	painter.setPen(Qt::black);
 	QRectF rectangle = racket->getRectangle();
 	painter.drawRoundedRect(rectangle, 20, 30, Qt :: RelativeSize);
 
-	painter.setPen(Qt::NoPen);
-
-	QRadialGradient gradient(ball->getCenter().x(), ball->getCenter().y(), ball->getDefRad(), 
+	if (blink) {
+		painter.setBrush(Qt :: NoBrush);
+	} else {
+		QRadialGradient radialGradient(ball->getCenter().x(), ball->getCenter().y(), ball->getDefRad(), 
 					ball->getCenter().x(), ball->getCenter().y() + ball->getDefRad());
-	gradient.setColorAt(0, Qt::lightGray);
-	gradient.setColorAt(0.1, Qt::lightGray);
-	gradient.setColorAt(1, Qt::black);
-	painter.setBrush(gradient);
+		radialGradient.setColorAt(0, Qt::lightGray);
+		radialGradient.setColorAt(0.1, Qt::lightGray);
+		radialGradient.setColorAt(1, Qt::black);
+		painter.setBrush(radialGradient);
+	}
+	painter.setPen(Qt::NoPen);
 	painter.drawEllipse(ball->getCenter(), ball->getRadius().x(), ball->getRadius().y());
 	painter.end();
 	sendState();

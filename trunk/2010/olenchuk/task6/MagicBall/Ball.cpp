@@ -3,11 +3,10 @@
 
 Ball :: Ball() {
 	defRad = 50;
-	width = 300.0;
-	height = 600.0;
-	center = QPointF(width / 2, height / 2);
+	width = 0;
+	height = 0;
+	center = QPointF(0, 0);
 	radius = QPoint(1,1) * defRad;
-	lives = 3;
 }
 QPointF Ball :: getCenter() {
 	return center;
@@ -23,12 +22,6 @@ qreal Ball :: getWidth() {
 }
 qreal Ball :: getHeight() {
 	return height;
-}
-int Ball :: getLives() {
-	return lives;
-}
-void Ball :: setLives(int lives) {
-	this->lives = lives;	
 }
 void Ball :: setCenterX(qreal x) {
 	center.setX(x);

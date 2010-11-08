@@ -4,7 +4,7 @@
 
 int main(int argv, char *argc[]) {
 	QApplication app(argv, argc);
-	if (argv < 2) {
+	/*if (argv < 2) {
 		return 1;
 	}
 	int port = QString(argc[1]).toInt();
@@ -17,7 +17,8 @@ int main(int argv, char *argc[]) {
 	if(!control.initSocket(port, ipAddress)) {
 		QMessageBox::critical(0, "Chat", "Port " + QString::number(port) + " is busy");
  		return 1;
-	}
+	}*/
+	Control control;
 	control.show();
 
 	return app.exec();

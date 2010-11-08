@@ -16,8 +16,6 @@ class Ball {
 		void setWindowSize(qreal width, qreal height);
 		void setRadiusX(int x);
 		void setRadiusY(int y);
-		void setLives(int lives);
-		int getLives();
 		QPointF getCenter();
 		QPoint getRadius();
 		qreal getDefRad();
@@ -30,8 +28,6 @@ class Ball {
 		qreal defRad;
 		QPointF center;
 		QPoint radius;
-		int lives;
-
 };
 
 

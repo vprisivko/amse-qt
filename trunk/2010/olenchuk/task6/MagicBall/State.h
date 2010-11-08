@@ -4,21 +4,27 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-class Racket;
-class Ball;
+class MagicBall;
 
 class State {
 
 	public:
-		State(Ball *ball, Racket *racket);
+		State(MagicBall *magicBall);
 
 	public:
-		//void setState(Ball * ball, Racket * racket);
 		QDomElement serialize(QDomDocument * doc);
-	
+		void updateState();
+		void restartState();
+		int getLives();
+		int getSpeed();
+		
+		
 	private:
-		Racket *racket;
-		Ball *ball;
+		MagicBall *magicBall;
+		int lives;
+		int speed;
+		int x;
+		int y;
 };
 
 

@@ -7,7 +7,6 @@
 class QLabel;
 class QPushButton;
 class SaxHandler;
-class QLineEdit;
 class QHostAddress;
 class QUdpSocket;
 
@@ -34,7 +33,7 @@ class Control : public QDialog {
 		Control(QWidget *parent = 0);
 
 	public:
-		bool initSocket(int port, QString ipAddress);
+		bool initSocket();
 
 	public:
 		State *state;
@@ -51,11 +50,14 @@ class Control : public QDialog {
 	private:
 		void sendMoveCommand(QString command);
 		void stateUpdated();
+		void setSettingsSocket();
+		void setToPort();
 
 	private:
-		QLineEdit *toPortEdit;
 		SaxHandler *stateHandler;
-		int port;
+		quint16 port;
+		quint16 toPort;
+		QString ipAddress;
 		QHostAddress hostAddress;
 		QUdpSocket *udpSocket;
 		QString str;

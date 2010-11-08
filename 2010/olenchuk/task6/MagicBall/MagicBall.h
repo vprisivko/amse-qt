@@ -2,13 +2,14 @@
 #define MAGICBALL_H
 
 #include <QDialog>
+#include <QHostAddress>
 
 class QUdpSocket;
 class Racket;
 class Ball;
 class State;
 class SaxHandler;
-class QLineEdit;
+class QTimer;
 
 class MagicBall : public QDialog {
 
@@ -18,35 +19,44 @@ class MagicBall : public QDialog {
 		MagicBall(QWidget *parent = 0);
 	
 	public:
-		bool initSocket(int port);
+		bool initSocket();
 		int getSpeed();
-
+		void startTimerPaint();
+		void timeControl();
+	
 	public:
 		Racket *racket;
 		Ball *ball;
+		State *state;
 	
 	protected:
-		void timerEvent(QTimerEvent *event);
 		void paintEvent(QPaintEvent *);
 
 	private slots:
 		void awaitCommand();
+		void updateTimerPaint();
+		void updateTimerBlink();
+		void updateTimers();
 		
 	private:
 		void sendState();
+		void setPort();
+		void setToPort();
 
 	private:
 		int x;
 		int y;
 		int speed;
 		QString ipAddress;
-		QLineEdit *toPortEdit;
 		SaxHandler * commandHandler;
 		QUdpSocket *udpSocket;
 		quint16 port;
-		State *state;
-		int timer;
-		int toPort;
+		quint16 toPort;
+		QHostAddress hostAddress;
+		double livesLineGradation;
+		QTimer *timerBlink;
+		QTimer *timerPaint;
+		bool blink;
 };
 
 #endif 

@@ -4,9 +4,10 @@
 #include <QUdpSocket>
 
 Control :: Control(QWidget *parent) : QDialog(parent) {
-
+	port = 0;
+	toPort = 0;
+	ipAddress = "";
 	labelLives = new QLabel;
-	toPortEdit = new QLineEdit;
 	state = new State();
 	stateHandler = new SaxHandler(state);
 
@@ -23,7 +24,6 @@ Control :: Control(QWidget *parent) : QDialog(parent) {
 	topLayout->addWidget(restartButton);
 	
 	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addWidget(toPortEdit);
 	mainLayout->addWidget(labelLives);
 	mainLayout->addItem(topLayout);
 	setLayout(mainLayout);
@@ -33,23 +33,52 @@ Control :: Control(QWidget *parent) : QDialog(parent) {
 	connect(moveLeftButton, SIGNAL(clicked()), this, SLOT(moveLeft()));
 	connect(moveRightButton, SIGNAL(clicked()), this, SLOT(moveRight()));
 	connect(restartButton, SIGNAL(clicked()), this, SLOT(restart()));
+
+	setSettingsSocket();
+	setToPort();
 }
-bool Control :: initSocket(int port, QString ipAddress) {
-	this->port = port;
+bool Control :: initSocket() {
 	udpSocket = new QUdpSocket(this);
 	if (udpSocket->isValid()) {
 		return false;
 	}
-	hostAddress.setAddress(ipAddress);
+	if (!hostAddress.setAddress(ipAddress)) {
+		QMessageBox::critical(0, "Conrol", "ip " + ipAddress + " no correct, count the number of points");
+		return false;
+	}
 	if (!(udpSocket->bind(hostAddress, port))) {
 		return false;
 	}
 	
-	setWindowTitle("Port: " + QString::number(port) + " " + "ip: " + ipAddress);
+	setWindowTitle(tr("Magic Ball Port: ") + QString::number(port) + tr(" ip: ") + ipAddress);
 	
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(awaitState()));
 	
 	return true;
+}
+void Control :: setSettingsSocket() {
+	bool ok;
+	int port = QInputDialog :: getInt(this, tr("Port"), tr("Enter Port, range 0....65535"), 10001, 0, 65535, 1, &ok);
+	if (ok) {
+		this->port = port;
+	} else {
+		setSettingsSocket();
+	}
+	QString ipAddress = QInputDialog :: getText(this, tr("ip"), tr("Enter ip of Magic Ball applications"), QLineEdit::Normal, "178.66.27.208", &ok);
+	if (ok && !ipAddress.isEmpty()) {
+		this->ipAddress = ipAddress;
+		if (!(initSocket())) {
+			QMessageBox::critical(0, "Control", "ip " + ipAddress + " something is wrong, maybe port already in use someone?");
+			setSettingsSocket();
+		}
+	}
+}
+void Control :: setToPort() {
+	bool ok;
+	int toPort = QInputDialog :: getInt(this, tr("Destination Port"), tr("Enter toPort, range 0....65535"), 10000, 0, 65535, 1, &ok);
+	if (ok) {
+		this->toPort = toPort;
+	}
 }
 void Control :: awaitState() {
 	//while (udpSocket->hasPendingDatagrams()) {
@@ -78,7 +107,11 @@ void Control :: keyPressEvent(QKeyEvent *e) {
 void Control :: sendMoveCommand(QString command) {
 	QString sendText = "<command value=\"" + command + "\" />";
 
-	udpSocket->writeDatagram(sendText.toAscii(), hostAddress, toPortEdit->text().toInt());
+	if (toPort == 0) {
+		setToPort();
+	}
+
+	udpSocket->writeDatagram(sendText.toAscii(), hostAddress, toPort);
 }
 void Control :: moveLeft()  {
 	sendMoveCommand("left");
@@ -91,11 +124,15 @@ void Control :: moveRight() {
 void Control :: restart() {
 	QString sendText = "<restart />";
 
-	udpSocket->writeDatagram(sendText.toAscii(), hostAddress, toPortEdit->text().toInt());
+	if (toPort == 0) {
+		setToPort();
+	}
+	
+	udpSocket->writeDatagram(sendText.toAscii(), hostAddress, toPort);
 	setFocus();
 }
 void Control :: stateUpdated() {
-	labelLives->setText("Lives: " + QString::number(state->lives) + "Width: " + QString::number(state->width) + "Y: " + QString::number(state->y));
+	labelLives->setText("Lives: " + QString::number(state->lives));
 
 	if (state->canMoveLeft()) {
 		moveLeftButton->setEnabled(true);

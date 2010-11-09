@@ -24,10 +24,22 @@ void Racket :: setCoordinates(qreal x, qreal y) {
 	coordinates.setY(y);
 }
 void Racket :: setCoordinateX(qreal x) {
-	coordinates.setX(x);
+	if (x < 0) {
+		coordinates.setX(0);
+	} else if (x + size.width() > windowWidth) {
+		coordinates.setX(windowWidth - size.width());
+	} else {
+		coordinates.setX(x);
+	}
 }
 void Racket :: setCoordinateY(qreal y) {
-	coordinates.setY(y);
+	if (y < 0) {
+		coordinates.setY(0);
+	} else if (y + size.height() > windowHeight) {
+		coordinates.setY(windowHeight - size.height());
+	} else {
+		coordinates.setY(y);
+	}
 }
 void Racket :: setWindowSize(qreal width, qreal height) {
 	if (windowWidth != width || windowHeight != height) {

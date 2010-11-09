@@ -64,7 +64,7 @@ void Control :: setSettingsSocket() {
 	} else {
 		setSettingsSocket();
 	}
-	QString ipAddress = QInputDialog :: getText(this, tr("ip"), tr("Enter ip of Magic Ball applications"), QLineEdit::Normal, "178.66.27.208", &ok);
+	QString ipAddress = QInputDialog :: getText(this, tr("ip"), tr("Enter ip of Magic Ball applications"), QLineEdit::Normal, "178.66.113.146", &ok);
 	if (ok && !ipAddress.isEmpty()) {
 		this->ipAddress = ipAddress;
 		if (!(initSocket())) {

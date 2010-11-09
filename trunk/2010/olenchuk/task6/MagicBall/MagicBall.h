@@ -23,6 +23,7 @@ class MagicBall : public QDialog {
 		int getSpeed();
 		void startTimerPaint();
 		void timeControl();
+		void acceleration();
 	
 	public:
 		Racket *racket;
@@ -37,6 +38,7 @@ class MagicBall : public QDialog {
 		void updateTimerPaint();
 		void updateTimerBlink();
 		void updateTimers();
+		void stopAcceleretion();
 		
 	private:
 		void sendState();

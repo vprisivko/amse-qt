@@ -24,8 +24,8 @@ MagicBall :: MagicBall(QWidget *parent) : QDialog(parent) {
 	racket->setWindowSize(width(), height());
 	racket->setCoordinates(width()/2, height() - 30);
 	ball->setWindowSize(width(), height());
-	ball->setCenterX(0);
-	ball->setCenterY(0);
+	ball->setCenterX(0 + ball->getDefRad());
+	ball->setCenterY(0 + ball->getDefRad());
 	state = new State(this);
 	commandHandler = new SaxHandler(this);
 	setPort();
@@ -35,6 +35,9 @@ MagicBall :: MagicBall(QWidget *parent) : QDialog(parent) {
 	connect(timerBlink, SIGNAL(timeout()), this, SLOT(updateTimerBlink()));
 }
 void MagicBall :: startTimerPaint() {
+	while (blink) {
+	//wait
+	}
 	timerPaint->start(5);
 }
 void MagicBall :: timeControl() {
@@ -132,11 +135,20 @@ void MagicBall :: updateTimerBlink() {
 void MagicBall :: updateTimers() {
 	timerBlink->stop();
 	blink = false;
-	ball->setCenterX(0);
-	ball->setCenterY(0);
+	ball->setCenterX(racket->getCoordinates().x() + racket->getRacketSize().width()/2);
+	ball->setCenterY(racket->getCoordinates().y() - ball->getDefRad());
 	if (state->getLives() != 0) {
 		startTimerPaint();
 	}
+}
+void MagicBall :: acceleration() {
+	timerPaint->stop();
+	timerPaint->start(3);
+	QTimer :: singleShot(3000, this, SLOT(stopAcceleretion()));
+}
+void MagicBall :: stopAcceleretion() {
+	timerPaint->stop();
+	startTimerPaint();
 }
 void MagicBall :: paintEvent(QPaintEvent *) {
 	QPainter painter(this);
@@ -161,13 +173,13 @@ void MagicBall :: paintEvent(QPaintEvent *) {
 	if (state->getLives() == 3) {
 		painter.setBrush(Qt :: red);
 	} else {
-		QLinearGradient linearGradient(0, 5, width(), 5);
+		QLinearGradient linearGradient(0, height()/100, width(), height()/100);
 		linearGradient.setColorAt(0, Qt :: red);
 		linearGradient.setColorAt(state->getLives()/livesLineGradation, Qt :: white);
 		painter.setBrush(linearGradient);
 	}
 	painter.setPen(Qt :: black);
-	QRectF drawLives(0, 0, width(), 10);
+	QRectF drawLives(0, 0, width(), height()/50);
 	painter.drawRoundedRect(drawLives, 0, 0, Qt :: RelativeSize);
 	
 	

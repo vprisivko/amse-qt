@@ -2,6 +2,7 @@
 #include "SaxHandler.h"
 #include <QtGui>
 #include <QUdpSocket>
+#include <QNetworkInterface>
 
 Control :: Control(QWidget *parent) : QDialog(parent) {
 	port = 0;
@@ -64,7 +65,20 @@ void Control :: setSettingsSocket() {
 	} else {
 		setSettingsSocket();
 	}
-	QString ipAddress = QInputDialog :: getText(this, tr("ip"), tr("Enter ip of Magic Ball applications"), QLineEdit::Normal, "178.66.113.146", &ok);
+	
+	QString ipAddress;
+	QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+	for (int i = 0; i < ipAddressesList.size(); ++i) {
+		if (ipAddressesList.at(i) != QHostAddress::LocalHost && ipAddressesList.at(i).toIPv4Address()) {
+			ipAddress = ipAddressesList.at(i).toString();
+			break;
+		}
+	}
+	if (ipAddress.isEmpty()) {
+		ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+	}
+	
+	ipAddress = QInputDialog :: getText(this, tr("ip"), tr("Enter ip of Magic Ball applications"), QLineEdit::Normal, ipAddress, &ok);
 	if (ok && !ipAddress.isEmpty()) {
 		this->ipAddress = ipAddress;
 		if (!(initSocket())) {

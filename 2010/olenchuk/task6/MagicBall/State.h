@@ -17,6 +17,7 @@ class State {
 		void restartState();
 		int getLives();
 		int getSpeed();
+		void loss();
 
 	private:
 		void updateShapeBall();

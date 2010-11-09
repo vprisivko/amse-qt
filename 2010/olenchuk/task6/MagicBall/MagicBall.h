@@ -24,7 +24,8 @@ class MagicBall : public QDialog {
 		void startTimerPaint();
 		void timeControl();
 		void acceleration();
-	
+		void stopAllTimers();
+		
 	public:
 		Racket *racket;
 		Ball *ball;
@@ -58,6 +59,8 @@ class MagicBall : public QDialog {
 		double livesLineGradation;
 		QTimer *timerBlink;
 		QTimer *timerPaint;
+		QTimer *timerSingleShotAcceleration;
+		QTimer *timerSingleShotBlink;
 		bool blink;
 };
 

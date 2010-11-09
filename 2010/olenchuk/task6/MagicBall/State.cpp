@@ -4,6 +4,7 @@
 #include "Racket.h"
 
 State :: State(MagicBall *magicBall) {
+	isPresenceStrainBall = false;
 	this->magicBall = magicBall;
 	lives = 3;
 	speed = 1;
@@ -25,7 +26,9 @@ State :: State(MagicBall *magicBall) {
 	}
 }
 void State :: updateState() {
+	isPresenceStrainBall = false;
 	if (magicBall->ball->getCenter().x() - magicBall->ball->getDefRad() <= magicBall->rect().x()) {
+		isPresenceStrainBall = true;
 		if (magicBall->ball->getRadius().x() <= magicBall->ball->getDefRad()/4) {
 			x = -x;
 		}
@@ -34,6 +37,7 @@ void State :: updateState() {
 		}
 	}
 	if (magicBall->ball->getCenter().y() - magicBall->ball->getDefRad() <= magicBall->rect().y()) {
+		isPresenceStrainBall = true;
 		if (magicBall->ball->getRadius().y() <= magicBall->ball->getDefRad()/4) {
 			y = -y;
 		}
@@ -42,6 +46,7 @@ void State :: updateState() {
 		}
 	}
 	if (magicBall->ball->getCenter().x() + magicBall->ball->getDefRad() >= magicBall->width()) {
+		isPresenceStrainBall = true;
 		if (magicBall->ball->getRadius().x() <= magicBall->ball->getDefRad()/4) {
 			x = -x;
 		}
@@ -49,11 +54,13 @@ void State :: updateState() {
 			magicBall->ball->setRadiusX(magicBall->ball->getRadius().x() - x);
 		}
 	}
-	
+	//Ракетка в деле...
 	if (magicBall->ball->getCenter().y() + magicBall->ball->getDefRad() >= magicBall->racket->getCoordinates().y()) {
-		if ((magicBall->ball->getCenter().x() + magicBall->ball->getDefRad() >= magicBall->racket->getCoordinates().x()) & 
+		if ((magicBall->ball->getCenter().x() + magicBall->ball->getDefRad() >= magicBall->racket->getCoordinates().x()) && 
 			(magicBall->ball->getCenter().x() - magicBall->ball->getDefRad() <= 
 				magicBall->racket->getCoordinates().x() + magicBall->racket->getRacketSize().width())) {
+
+			isPresenceStrainBall = true;
 			if (magicBall->ball->getRadius().y() <= magicBall->ball->getDefRad()/4) {
 				y = -y;
 			}
@@ -62,25 +69,43 @@ void State :: updateState() {
 			}
 		}
 
-		if ((magicBall->ball->getCenter().x() - magicBall->ball->getDefRad() <= 
-			magicBall->racket->getCoordinates().x() + magicBall->racket->getRacketSize().width()) & 
-					(magicBall->ball->getCenter().x() + magicBall->ball->getDefRad() >= magicBall->racket->getCoordinates().x())) {
+
+		if ((magicBall->ball->getCenter().x() + magicBall->ball->getDefRad() >= magicBall->racket->getCoordinates().x()) && 
+			(magicBall->ball->getCenter().x() < magicBall->racket->getCoordinates().x()) && (x > 0)) {
+			
 			if (magicBall->ball->getRadius().y() <= magicBall->ball->getDefRad()/4) {
-				y = -y;
+				x = -x;
+				magicBall->acceleration();
 			}
-			if ((magicBall->ball->getRadius().y() - y) <= magicBall->ball->getDefRad()) {
-				magicBall->ball->setRadiusY(magicBall->ball->getRadius().y() - y);
+			//if ((magicBall->ball->getRadius().x() - x) <= magicBall->ball->getDefRad()) {
+				//magicBall->ball->setRadiusX(magicBall->ball->getRadius().x() - x);
+			//}
+		}
+		if ((magicBall->ball->getCenter().x() - magicBall->ball->getDefRad() <= 
+			magicBall->racket->getCoordinates().x() + magicBall->racket->getRacketSize().width()) && 
+				(magicBall->ball->getCenter().x() > magicBall->racket->getCoordinates().x() + magicBall->racket->getRacketSize().width()) 
+					&& (x < 0)) {
+			
+			if (magicBall->ball->getRadius().y() <= magicBall->ball->getDefRad()/4) {
+				x = -x;
+				magicBall->acceleration();
 			}
+			//if ((magicBall->ball->getRadius().x() + x) <= magicBall->ball->getDefRad()) {
+				//magicBall->ball->setRadiusX(magicBall->ball->getRadius().x() + x);
+			//}
 		}
 	}
 	
-	if (magicBall->ball->getCenter().y() + magicBall->ball->getDefRad() >= magicBall->height()) {
+	if (magicBall->ball->getCenter().y() + magicBall->ball->getRadius().y() >= magicBall->height()) {
+		magicBall->ball->setRadiusX(magicBall->ball->getDefRad());
+		magicBall->ball->setRadiusY(magicBall->ball->getDefRad());
 		magicBall->timeControl();
 		if (lives > 0) {
 			lives = lives - 1;
 		}
 		return;
 	}
+	updateShapeBall(); //Необходимо если ракетка выскочила из под шарика, обратимость процесса деформации..
 	magicBall->ball->setCenterX(magicBall->ball->getCenter().x() + x);
 	magicBall->ball->setCenterY(magicBall->ball->getCenter().y() + y);
 }
@@ -93,6 +118,12 @@ int State :: getLives() {
 }
 int State :: getSpeed() {
 	return speed;
+}
+void State :: updateShapeBall() {
+	if (!isPresenceStrainBall) {
+		magicBall->ball->setRadiusX(magicBall->ball->getDefRad());
+		magicBall->ball->setRadiusY(magicBall->ball->getDefRad());	
+	}
 }
 QDomElement State::serialize(QDomDocument * doc) {
 	QDomElement stateElement = doc->createElement("State");

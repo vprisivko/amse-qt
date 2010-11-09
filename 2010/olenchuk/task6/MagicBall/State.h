@@ -17,6 +17,9 @@ class State {
 		void restartState();
 		int getLives();
 		int getSpeed();
+
+	private:
+		void updateShapeBall();
 		
 		
 	private:
@@ -25,6 +28,7 @@ class State {
 		int speed;
 		int x;
 		int y;
+		bool  isPresenceStrainBall;
 };
 
 

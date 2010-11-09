@@ -18,6 +18,8 @@ MagicBall :: MagicBall(QWidget *parent) : QDialog(parent) {
 	ipAddress = "";
 	timerPaint = new QTimer(this);
 	timerBlink = new QTimer(this);
+	timerSingleShotAcceleration = new QTimer(this);
+	timerSingleShotBlink = new QTimer(this);
 	ball = new Ball();	
 	racket = new Racket();
 	
@@ -31,8 +33,13 @@ MagicBall :: MagicBall(QWidget *parent) : QDialog(parent) {
 	setPort();
 	setToPort();
 
+	timerSingleShotBlink->setSingleShot(true);
+	timerSingleShotAcceleration->setSingleShot(true);
+
 	connect(timerPaint, SIGNAL(timeout()), this, SLOT(updateTimerPaint()));
 	connect(timerBlink, SIGNAL(timeout()), this, SLOT(updateTimerBlink()));
+	connect(timerSingleShotBlink, SIGNAL(timeout()), this, SLOT(updateTimers()));
+	connect(timerSingleShotAcceleration, SIGNAL(timeout()), this, SLOT(stopAcceleretion()));
 }
 void MagicBall :: startTimerPaint() {
 	while (blink) {
@@ -43,7 +50,7 @@ void MagicBall :: startTimerPaint() {
 void MagicBall :: timeControl() {
 	timerPaint->stop();
 	timerBlink->start(1000);
-	QTimer :: singleShot(5000, this, SLOT(updateTimers()));
+	timerSingleShotBlink->start(5000);
 }
 bool MagicBall :: initSocket() {
 	udpSocket = new QUdpSocket(this);
@@ -135,8 +142,7 @@ void MagicBall :: updateTimerBlink() {
 void MagicBall :: updateTimers() {
 	timerBlink->stop();
 	blink = false;
-	ball->setCenterX(racket->getCoordinates().x() + racket->getRacketSize().width()/2);
-	ball->setCenterY(racket->getCoordinates().y() - ball->getDefRad());
+	state->loss();
 	if (state->getLives() != 0) {
 		startTimerPaint();
 	}
@@ -144,11 +150,18 @@ void MagicBall :: updateTimers() {
 void MagicBall :: acceleration() {
 	timerPaint->stop();
 	timerPaint->start(3);
-	QTimer :: singleShot(3000, this, SLOT(stopAcceleretion()));
+	timerSingleShotAcceleration->start(3000);
 }
 void MagicBall :: stopAcceleretion() {
 	timerPaint->stop();
 	startTimerPaint();
+}
+void MagicBall :: stopAllTimers() {
+	timerPaint->stop();
+	timerBlink->stop();
+	timerSingleShotAcceleration->stop();
+	timerSingleShotBlink->stop();
+	blink = false;
 }
 void MagicBall :: paintEvent(QPaintEvent *) {
 	QPainter painter(this);

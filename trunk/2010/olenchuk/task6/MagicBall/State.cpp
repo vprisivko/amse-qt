@@ -110,8 +110,14 @@ void State :: updateState() {
 	magicBall->ball->setCenterY(magicBall->ball->getCenter().y() + y);
 }
 void State :: restartState() {
+	loss();
 	lives = 3;
+	magicBall->stopAllTimers();
 	magicBall->startTimerPaint();
+}
+void State :: loss() {
+	magicBall->ball->setCenterX(magicBall->racket->getCoordinates().x() + magicBall->racket->getRacketSize().width()/2);
+	magicBall->ball->setCenterY(magicBall->racket->getCoordinates().y() - magicBall->ball->getDefRad());
 }
 int State :: getLives() {
 	return lives;

@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = ../task7
 DEPENDPATH += .
 INCLUDEPATH += .
 QT += testlib

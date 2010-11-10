@@ -6,7 +6,7 @@
 State :: State(MagicBall *magicBall) {
 	isPresenceStrainBall = false;
 	this->magicBall = magicBall;
-	lives = 3;
+	lives = 0;
 	speed = 1;
 	qsrand(time(0));
 	x = 0;

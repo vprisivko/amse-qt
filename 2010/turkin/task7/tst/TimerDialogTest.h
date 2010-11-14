@@ -14,9 +14,16 @@ class TimerDialogTest:public QObject {
 
     private slots:
 
-        void testPeriod();
-        void setValueToTimer();
-        void testChangeTimer();
+        //user enter digits, then click set and stop on different timers
+        void userClickSetAndStop();
+        // user enter text checking
+        void userEnterText();
+        //turning timers on and off
+        void testTimerOnOff();
+        //signal test
+        void testSignalIntervalChange();
+        //test timers are really count
+        void timersWorkTest();
 
 
     private:

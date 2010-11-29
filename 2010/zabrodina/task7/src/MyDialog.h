@@ -1,38 +1,49 @@
-#ifndef _MYDIALOG_H_
-#define _MYDIALOG_H_
-#include<QDialog>
-#include<QPushButton>
-#include<QLineEdit>
-#include<QLCDNumber>
-#include<QComboBox>
-#include<QTimer>
-#include<QEvent>
-#include<QLabel>
-class MyDialog: public QDialog {
-Q_OBJECT;
+#ifndef MYDIALOG_H
+#define MYDIALOG_H
+
+#include <QtGui/QDialog>
+#include <QLabel>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QPushButton>
+
+
+class MyDialog : public QDialog
+{
+    Q_OBJECT
+
+private:
+    QLabel *firstTimerTextLabel;
+    QLabel *secondTimerTextLabel;
+    QLabel *firstTimerNumberLabel;
+    QLabel *secondTimerNumberLabel;
+
+
+    QPushButton *stopButton;
+
 public:
-	int timer_id;
-	int timer_e;
-	int currentTimer;
-	int currentTime1;
-	int currentTime2;
-	int period1,period2;
-	QLabel *timer1Label;
-	QLabel *timer2Label;
-	QLCDNumber *num1;
-	QLCDNumber *num2;
-	QComboBox *timerCombo;
-	QPushButton *setButton;
-	QPushButton *stopButton;
-	QLineEdit *setLineEdit;	
-	MyDialog();
-	void timerEvent( QTimerEvent *e);
-        friend class Test1;
+    QLineEdit *intervalLineEdit;
+    QPushButton *setButton;
+    QComboBox *changeTimerComboBox;
+
+    int firstTimerPeriod;
+    int secondTimerPeriod;
+
+private:
+
+    int firstTimerId;
+    int secondTimerId;
+    int firstTimerCounter;
+    int secondTimerCounter;   
+
+public:
+    MyDialog(QWidget *parent = 0);
+    ~MyDialog();
+
 public slots:
-	void setValue();
-	void stopTimer();
-	void changeCurrentTimer();
-
+    void timerEvent(QTimerEvent *e);
+    void setTimer();
+    void stopTimer();
 };
-#endif //MYDIALOG
 
+#endif // MYDIALOG_H

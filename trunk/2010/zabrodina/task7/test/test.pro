@@ -9,5 +9,5 @@ INCLUDEPATH += .
 QT += testlib
 
 # Input
-HEADERS += Test.h ../src/MyDialog.h
-SOURCES += main.cpp Test.cpp ../src/MyDialog.cpp
+HEADERS += Test1.h ../src/MyDialog.h
+SOURCES += main.cpp Test1.cpp ../src/MyDialog.cpp

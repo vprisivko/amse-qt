@@ -1,22 +1,11 @@
-#include<stdio.h>
 #include <QtGui/QApplication>
-#include<QDialog>
-#include<QPushButton>
-#include<QVBoxLayout>
-#include<QHBoxLayout>
-#include<QGridLayout>
-#include<QRadioButton>
-#include<QTextEdit>
-#include<QLineEdit>
-#include<QCheckBox>
-#include<QComboBox>
-#include<QLabel>
-#include"MyDialog.h"
+#include "dialog.h"
 
-int main(int argc, char *argv[]) {
-QApplication app(argc, argv);
-MyDialog dial;
-dial.show();
-return app.exec();
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Dialog w;
+    w.setWindowTitle("Mega Timer");
+    w.show();
+    return a.exec();
 }
-

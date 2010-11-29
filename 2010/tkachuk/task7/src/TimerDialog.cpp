@@ -4,9 +4,9 @@
 #include <QTimerEvent>
 #include "TimerDialog.h"
 
-TimerDialog::TimerDialog(QWidget *parent) : QDialog(parent),
-	myTimer1(0), myTimer2(0)
-{
+TimerDialog::TimerDialog(QWidget *parent) : QDialog(parent) {
+	myTimer1 = 0;
+	myTimer2 = 0;
 	valueTimer1 = valueTimer2 = 0;
 	QVBoxLayout *mainLayout = new QVBoxLayout();
 	QHBoxLayout *lay = NULL;
@@ -79,7 +79,7 @@ void TimerDialog::stopPressed() {
 void TimerDialog::timerEvent(QTimerEvent *event) {
     if (event->timerId() == myTimer1) {
 		QString str = QString("<b>Timer 1:</b> %1").arg(++valueTimer1);
-    	label1->setText(str);
+		label1->setText(str);
 	} else {
 		if (event->timerId() == myTimer2) {
         	QString str = QString("<b>Timer 2:</b> %1").arg(++valueTimer2);

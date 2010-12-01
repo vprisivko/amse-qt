@@ -10,7 +10,7 @@ void TestCounter :: testComboBox() {
 	QSignalSpy spy(counter->comboBox, SIGNAL(currentIndexChanged(int)));
 	counter->comboBox->setCurrentIndex(1);
 	counter->comboBox->setCurrentIndex(0);
-	QCOMPARE((int) 2, spy.count());
+	QCOMPARE(2, spy.count());
 }
 void TestCounter :: testSetClicked() {
 	counter->comboBox->setCurrentIndex(0);

@@ -19,9 +19,8 @@
   <property name="windowTitle">
    <string>Calculator</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
@@ -38,7 +37,6 @@
     <property name="readOnly">
      <bool>true</bool>
     </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
